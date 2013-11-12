@@ -1,4 +1,0 @@
-LieveWeelde
-===========
-
-Amstelhaege Heuristieken.
