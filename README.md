@@ -1,4 +1,6 @@
+
 Lieve Weelde
+---------------------------
 
 Heb een klein beginnetje gemaakt voor de app.
 
@@ -10,7 +12,6 @@ De huisjes hebben nog geen overlap check.
 Het is niet veel maar het is een beginnetje. Ik ga proberen er morgen weer even aan te werken en dinsdag de hele dag.
 
 
----------------------------------------
 Ideeën
 ---------------------------------------
 
