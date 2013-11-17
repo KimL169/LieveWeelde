@@ -9,20 +9,20 @@ pygame.init()
 # Variabelen en scherminstellingen
 #------------------------------------------------------------------
 
-# De window size (= oppervlakte huizen gedeeld door 5 for now)
-# Dan hebben we even een realistische representatie, we moeten de echte afmetingen op een andere manier zien te krijgen.
-WIDTH = 240
-HEIGHT = 360
-SCREEN_SIZE = (WIDTH, HEIGHT)
-screen = pygame.display.set_mode(SCREEN_SIZE)
-screen.fill(WHITE)
-
 #kleurtjes
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255,   0,   0)  # = bungalow
 GREEN = (  0, 255,   0) # = maison
 BLUE = (  0,   0, 255) # = eensgezins
+
+# De window size (= oppervlakte huizen gedeeld door 5 for now)
+# Dan hebben we even een realistische representatie, we moeten de echte afmetingen op een andere manier zien te krijgen, met die pixels werkt zo niet...
+WIDTH = 240
+HEIGHT = 360
+SCREEN_SIZE = (WIDTH, HEIGHT)
+screen = pygame.display.set_mode(SCREEN_SIZE)
+screen.fill(WHITE)
 
 # variabelen voor handmatige beweging van de huisjes.
 x,y = 0, 0
@@ -31,12 +31,13 @@ movex, movey = 0,0
 
 #------------------------------------------------------------------
 # Functies. Deze zijn nog niet geschreven, maar heb ze opgedoken en dacht dat ze erg van pas zouden komen.
+# Online is genoeg te vinden over coordinatie van objecten ten opzichte van elkaar en handling van overlap in pygame.
 #------------------------------------------------------------------
 
 # kijkt of een huis overlapped met een ander huis, dit is een beginnetje.
 def do_houses_overlap():
-	for each house in houses:
-
+	for house in houses:
+		#.... 
 	    for a, b in [(rect1, rect2), (rect2, rect1)]:
 	        # Check if a's corners are inside b
 	        if ((is_point_inside_house(a.left, a.top, b)) or
@@ -46,11 +47,12 @@ def do_houses_overlap():
 	            return True
 
 # helper voor de overlap functie, moet ook nog worden gemaakt.
-def is_point_inside_house(x, y, House a):
-    if (x > a.left) and (x < a.right) and (y > a.top) and (y < a.bottom):
+def is_point_inside_house(x, y, House):
+    if (x > House.left) and (x < House.right) and (y > House.top) and (y < House.bottom):
         return True
     else:
         return False
+
 
 #------------------------------------------------------------------
 # Main program loop												   
@@ -125,20 +127,19 @@ class Huis(object):
 		#TODO?
 		return
 
+'''
 class Maison(Huis):
 	# TODO
-	return
 class Eenpersoons(Huis):
  	# TODO
- 	return
 class Bungalow(Huis):
 	# TODO
-	return
+'''
 
 #------------------------------------------------------------------
 # Classes van de verschillende oppervlak-typen.
 #------------------------------------------------------------------
-class Oppervlakte (object)
+class Oppervlakte (object):
 
 	def __init__(self):
 		return

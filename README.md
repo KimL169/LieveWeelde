@@ -1,18 +1,10 @@
 Lieve Weelde
 
-Een huizenpark voor rijk...en arm
+Heb een klein beginnetje gemaakt voor de app.
 
-To do:
+Je kan nu huizen in een veld planten randomly zonder dat ze buiten de boundaries vallen. De afmetingen zijn op maat (maar in pixels en allemaal gedeeld door 5 zodat het overzichtelijk bleef).
+Je kan huisjes handmatig (random) planten met E, B en M.
 
-    Main programma schrijven (grid maker)
-    Huizen programmeren (Objects met properties en some behavior, zoals rotatie
-    Iets dat de huisjes op een bepaalde manier op de grid zet (random? of met al een bepaalde op voorhand genomen orde?)
-    Iets dat deze huisjes daarna vrijstand gaat toebedelen door ze te schuiven
-    ??
+De huisjes hebben nog geen overlap check.
 
-Notes
-
-Ik denk zelf dat we de huizen allereerst random neer moeten zetten.
-Als we de simulatie namelijk steeds op nieuw laten draaien denk ik dat het in de weg komt van het vinden van de beste oplossing.
-Als we daarin gaan interferen met een op voorhand bedachte oplossing door ons. Ik denk dat we eerst random moeten doen en als dat lukt, 
-dat we dan altijd kunnen kijken of we een patroon kunnen gaan toevoegen aan het programma om nog betere resultaten te krijgen.
+Het is niet veel maar het is een beginnetje. Ik ga proberen er morgen weer even aan te werken en dinsdag de hele dag.
