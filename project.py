@@ -77,7 +77,7 @@ while True:
 			elif event.key == K_m: #maison
 				pygame.draw.rect(screen, GREEN, (randint(46,WIDTH-46),randint(45,HEIGHT-45), 46, 45))
 
-			#Om de huisjes te kunnen verplaatsen over het scherm, werkt nog niet, beginnetje
+			#Om de huisjes ook handmatig te kunnen verplaatsen over het scherm, werkt nog niet, beginnetje
 			if event.key == K_LEFT:
 				movex = -1
 			elif event.key == K_RIGHT:
