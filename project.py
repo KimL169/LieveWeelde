@@ -96,10 +96,12 @@ while True:
 			elif event.key == K_DOWN:
 				movey= 0
 
+		# Loop voor het plaatsen van huizen
+		# Komt straks in plaats van de handmatige plaatsing die er nu nog staat. 
+		# voor de x en y coordinaten in 'render(x, y)'  moet een functie komen die een random x en y produceert maar zorgt dat ze niet overlappen.
 	'''
 		#check huizenvariant en render de huizen
  		Hvariant = TwintigH()
- 		# check eerst nog welke huizenvariant
 		for i in range(1, Hvariant.eengezins):
 			name =  "e%d" % (i)
 			e = Eengezin()
@@ -113,6 +115,7 @@ while True:
 		for i in range(1, Hvariant.maison):
 			name= "m%d" % (i)
 			m = Maison()
+			m.name(name)
 			m.render(x, y)
 	'''
 
