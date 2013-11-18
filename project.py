@@ -96,25 +96,52 @@ while True:
 			elif event.key == K_DOWN:
 				movey= 0
 
-		x+=movex
-		y+=movey
-	
-		pygame.display.update()
+	'''
+		#check huizenvariant en render de huizen
+ 		Hvariant = TwintigH()
+ 		# check eerst nog welke huizenvariant
+		for i in range(1, Hvariant.eengezins):
+			name =  "e%d" % (i)
+			e = Eengezin()
+			e.name(name)
+			e.render(x, y)
+		for i in range(1, Hvariant.bungalow):
+			name = "b%d" % (i)
+			b = Bungalow()
+			b.name(name)
+			b.render(x, y)
+		for i in range(1, Hvariant.maison):
+			name= "m%d" % (i)
+			m = Maison()
+			m.render(x, y)
+	'''
+
+	x+=movex
+	y+=movey
+
+	pygame.display.update()
 
 #------------------------------------------------------------------
-# Alvast idee voor de classes van de huizen (waarschijnlijk al fout, moet nog even in OOP duiken van Python)
+# Alvast idee voor de classes van de huizen (waarschijnlijk fout, moet nog even in OOP duiken van Python)
 #------------------------------------------------------------------
 class Huis(object):
 
-	def __int__(self, hoogte, breedte, prijs, vrijstand_vrp):
+	def __int__(self, hoogte, breedte, prijs, vrijstand_vrp, kleur, kleurvrs):
 		pygame.draw.rect(screen, BLUE, (10, 20, 100, 50))
 		self.hoogte = hoogte
 		self.breedte = breedte
 		self.prijs = prijs
 		self.vrijstand_vrp = vrijstand_vrp
+		self.kleur = kleur
+		self.kleurvrs = kleurvrs
+
+	def name(self, name):
+		self.name = name
 	
-	def teken_huis(self):
-		#TODO
+	def render(self,x,y):
+		self.x = x
+		self.y = y
+		pygame.draw.rect(screen,self.kleur(self.x, self.y, self.breedte, self.hoogte))
 		# huis + verplichte vrijstand moeten onderscheidbare oppervlakken zijn.
 		# gezien verplichte vrijstand ook 'gedeeld' kan worden.
 		return
@@ -127,37 +154,33 @@ class Huis(object):
 		#TODO?
 		return
 
-'''
-class Maison(Huis):
-	# TODO
-class Eenpersoons(Huis):
- 	# TODO
-class Bungalow(Huis):
-	# TODO
-'''
 
 #------------------------------------------------------------------
-# Classes van de verschillende oppervlak-typen.
+# Classes van de verschillende Huizenvarianten
 #------------------------------------------------------------------
-class Oppervlakte (object):
 
-	def __init__(self):
-		return
+class TwintigH():	
 
-class TwintigHuizen(Oppervlakte):	
+	def __init__(self, eengezins, maisons, bungalows):
+		self.eengezins = 12
+		self.bungalow = 5
+		self.maison = 3
+		
+class VeertigH():
 
-	def __init__(self):
-		return
+	def __init__(self, eengezins, maisons, bungalows):
+		self.eengezins = 24
+		self.bungalow = 10
+		self.maison = 6
+	
 
-class VeertigHuizen(Oppervlakte):
+class ZestigH():
 
-	def __init__(self):
-		return
-
-class ZestigHuizen(Oppervlakte):
-
-	def __init__(self):
-		return
+	def __init__(self, eengezins, maisons, bungalows):
+		self.eengezins = 36
+		self.bungalow = 15
+		self.maison = 9
+		
 
 
 
