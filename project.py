@@ -97,7 +97,7 @@ while True:
 				movey= 0
 
 		# Loop voor het plaatsen van huizen
-		# Komt straks in plaats van de handmatige plaatsing die er nu nog staat. 
+		# Komt straks in plaats van de handmatige plaatsing die er nu nog staat
 		# voor de x en y coordinaten in 'render(x, y)'  moet een functie komen die een random x en y produceert maar zorgt dat ze niet overlappen.
 	'''
 		#check huizenvariant en render de huizen
