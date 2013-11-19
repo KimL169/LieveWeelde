@@ -1,0 +1,9 @@
+		if event.type == KEYDOWN:
+			# toetsen: E = eengezinsswoning, M = Maison, B = Bungalow
+			if event.key == K_e: #eensgezins
+				newhouse = pygame.draw.rect(screen, BLUE, (randint(24,WIDTH-24),randint(24,HEIGHT-24), 24, 24))
+				if newhouse.collidelist(rects) == -1
+					#add newhouse to [rects]
+					
+				else 
+					#delete newhouse
