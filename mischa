@@ -41,11 +41,12 @@ while True:
 
     random_pos = (randint(0,WIDTH), randint(0,HEIGHT))
     for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
-
         if event.type == KEYDOWN:
+           
+            if event.key == K_q: #quit 
+                pygame.quit()
+                sys.exit()
+            
             if event.key == K_g: #go 
 
                     #Plaatsing Maisons
