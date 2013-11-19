@@ -5,7 +5,6 @@ from pygame.locals import *
 pygame.init()
 
 
-
 #------------------------------------------------------------------
 # Variabelen en scherminstellingen
 #------------------------------------------------------------------
@@ -13,6 +12,13 @@ pygame.init()
 #lijst met alle rectangles, voor collide check
 rects = []    
 
+#define total number of houses
+total_Houses = 20
+
+#define total number of each house type
+total_Maisons = int(total_Houses * 0.15) 
+total_Bungalows = int(total_Houses * 0.25)
+total_Eensgezins = int(total_Houses * 0.60)
 
 #kleurtjes
 BLACK = (0, 0, 0)
@@ -23,12 +29,10 @@ BLUE = (  0,   0, 255) # = eensgezins
 
 # De window size (= oppervlakte huizen gedeeld door 5 for now)
 # Dan hebben we even een realistische representatie, we moeten de echte afmetingen op een andere manier zien te krijgen, met die pixels werkt zo niet...
-WIDTH = 240
-HEIGHT = 360
+WIDTH = 600
+HEIGHT = 800
 SCREEN_SIZE = (WIDTH, HEIGHT)
 screen = pygame.display.set_mode(SCREEN_SIZE)
-screen.fill(WHITE)
-
 
 #------------------------------------------------------------------
 # Main program loop                                                
@@ -46,16 +50,54 @@ while True:
             #randint zet ze random op het scherm - de breedte en hoogte van het huis+verplichtvrst zodat het allemaal op de map valt. 
         if event.type == KEYDOWN:
             # toetsen: E = eengezinsswoning, M = Maison, B = Bungalow
-            if event.key == K_e: #eensgezins
+            if event.key == K_g: #go
                 
-                plaatsing = False
-                while plaatsing == False:
+                for x in range (total_Houses): 
 
-                    newhouse = pygame.draw.rect(screen, BLUE, (randint(24,WIDTH-24),randint(24,HEIGHT-24), 24, 24))
+
+                    #Plaatsing Maisons
+                    for y in range (total_Maisons):
+                        plaatsing = False
+                        while plaatsing == False:
+
+                            newhouse = pygame.draw.rect(screen, GREEN, (randint(46,WIDTH-46),randint(45,HEIGHT-45), 46, 45))
+                            
+                            if newhouse.collidelist(rects) == -1:
+                                #add newhouse to [rects]
+                                rects.append(newhouse)
+                                plaatsing = True
+                                # pygame.display.update(rects)
+
+
+
+                    #Plaatsing Bungalows
+                    for y in range (total_Bungalows):
+                        plaatsing = False
+                        while plaatsing == False:
+
+                            newhouse = pygame.draw.rect(screen, RED, (randint(32,WIDTH-32),randint(45,HEIGHT-45), 32, 27))
+                            
+                            if newhouse.collidelist(rects) == -1:
+                                #add newhouse to [rects]
+                                rects.append(newhouse)
+                                plaatsing = True
+                                # pygame.display.update(rects)
+
                     
-                    if newhouse.collidelist(rects) == -1:
-                        #add newhouse to [rects]
-                        rects.append(newhouse)
-                        plaatsing = True
-                        pygame.display.update(rects)
+                    #Plaatsing Eengezinswoningen
+                    for y in range (total_Eensgezins):
+                        plaatsing = False
+                        while plaatsing == False:
+
+                            newhouse = pygame.draw.rect(screen, BLUE, (randint(24,WIDTH-24),randint(24,HEIGHT-24), 24, 24))
+                            
+                            if newhouse.collidelist(rects) == -1:
+                                #add newhouse to [rects]
+                                rects.append(newhouse)
+                                plaatsing = True
                           
+                    pygame.display.update(rects)
+                    break
+
+
+
