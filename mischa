@@ -45,29 +45,21 @@ while True:
             pygame.quit()
             sys.exit()
 
-            #check of een toets is ingedrukt, if so, check welke en plaats het Huisje
-            #alle maten van huizen zijn tijdelijk gedeeld door 5 zodat het allemaal mooi op het scherm past.
-            #randint zet ze random op het scherm - de breedte en hoogte van het huis+verplichtvrst zodat het allemaal op de map valt. 
         if event.type == KEYDOWN:
-            # toetsen: E = eengezinsswoning, M = Maison, B = Bungalow
-            if event.key == K_g: #go
-                
-                for x in range (total_Houses): 
-
+            if event.key == K_g: #go 
 
                     #Plaatsing Maisons
                     for y in range (total_Maisons):
                         plaatsing = False
                         while plaatsing == False:
 
-                            newhouse = pygame.draw.rect(screen, GREEN, (randint(46,WIDTH-46),randint(45,HEIGHT-45), 46, 45))
+                            newhouse = pygame.draw.rect(screen, GREEN, (randint(33,WIDTH-33),randint(31,HEIGHT-31), 33, 45))
                             
                             if newhouse.collidelist(rects) == -1:
                                 #add newhouse to [rects]
                                 rects.append(newhouse)
                                 plaatsing = True
                                 # pygame.display.update(rects)
-
 
 
                     #Plaatsing Bungalows
@@ -75,7 +67,7 @@ while True:
                         plaatsing = False
                         while plaatsing == False:
 
-                            newhouse = pygame.draw.rect(screen, RED, (randint(32,WIDTH-32),randint(45,HEIGHT-45), 32, 27))
+                            newhouse = pygame.draw.rect(screen, RED, (randint(30,WIDTH-30),randint(22,HEIGHT-22), 30, 22))
                             
                             if newhouse.collidelist(rects) == -1:
                                 #add newhouse to [rects]
@@ -83,7 +75,7 @@ while True:
                                 plaatsing = True
                                 # pygame.display.update(rects)
 
-                    
+                  
                     #Plaatsing Eengezinswoningen
                     for y in range (total_Eensgezins):
                         plaatsing = False
@@ -98,6 +90,3 @@ while True:
                           
                     pygame.display.update(rects)
                     break
-
-
-
