@@ -1,3 +1,6 @@
+#lijst met alle rectangles, voor collide check
+rects = []   	
+	
 		if event.type == KEYDOWN:
 			# toetsen: E = eengezinsswoning, M = Maison, B = Bungalow
 			if event.key == K_e: #eensgezins
