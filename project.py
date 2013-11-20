@@ -4,10 +4,27 @@ from pygame.locals import *
 
 pygame.init()
 
-
 #------------------------------------------------------------------
 # Variabelen en scherminstellingen
 #------------------------------------------------------------------
+
+#lijst met alle rectangles, voor collide check
+rects = []    
+
+#define total number of houses
+total_Houses = 20
+
+#define total number of each house type
+total_Maisons = int(total_Houses * 0.15) 
+total_Bungalows = int(total_Houses * 0.25)
+total_Eensgezins = int(total_Houses * 0.60)
+
+#display settings
+WIDTH = 240
+HEIGHT = 360
+SCREEN_SIZE = (WIDTH, HEIGHT)
+screen = pygame.display.set_mode(SCREEN_SIZE)
+
 
 #kleurtjes
 BLACK = (0, 0, 0)
@@ -18,15 +35,44 @@ BLUE = (  0,   0, 255) # = eensgezins
 
 # De window size (= oppervlakte huizen gedeeld door 5 for now)
 # Dan hebben we even een realistische representatie, we moeten de echte afmetingen op een andere manier zien te krijgen, met die pixels werkt zo niet...
-WIDTH = 240
-HEIGHT = 360
-SCREEN_SIZE = (WIDTH, HEIGHT)
-screen = pygame.display.set_mode(SCREEN_SIZE)
-screen.fill(WHITE)
-
 # variabelen voor handmatige beweging van de huisjes.
 x,y = 0, 0
 movex, movey = 0,0
+
+#--------------------------------
+# Classes voor de huisjes
+#----------------------------
+
+class Maison():
+
+    def __init__ (self, hoogte, breedte, kleur):
+        self.hoogte = hoogte #nu nog met vrijstand included 
+        self.breedte = breedte
+        self.kleur = kleur
+
+
+    def render(self):
+        pygame.draw.rect(screen, self.kleur, (randint(self.breedte, WIDTH-self.breedte), randint(self.hoogte, HEIGHT-self.hoogte), self.breedte, self.hoogte))
+
+class Bungalow():
+
+    def __init__ (self, hoogte, breedte, kleur):
+        self.hoogte = hoogte #nu nog met vrijstand included 
+        self.breedte = breedte
+        self.kleur = kleur
+
+    def render(self):
+        pygame.draw.rect(screen, self.kleur, (randint(self.breedte, WIDTH-self.breedte), randint(self.hoogte, HEIGHT-self.hoogte), self.breedte, self.hoogte))
+
+class Eengezins():
+
+    def __init__ (self, hoogte, breedte, kleur):
+        self.hoogte = hoogte #nu nog met vrijstand included 
+        self.breedte = breedte
+        self.kleur = kleur
+
+    def render(self):
+        pygame.draw.rect(screen, self.kleur, (randint(self.breedte, WIDTH-self.breedte), randint(self.hoogte, HEIGHT-self.hoogte), self.breedte, self.hoogte))
 
 
 #------------------------------------------------------------------
@@ -53,120 +99,79 @@ def is_point_inside_house(x, y, House):
     else:
         return False
 
+def collision_detect():   
+    plaatsing = False
+    while plaatsing == False:
+
+        newhouse = pygame.draw.rect(screen, BLUE, (randint(24,WIDTH-24),randint(24,HEIGHT-24), 24, 24))
+        
+        if newhouse.collidelist(rects) == -1:
+            #add newhouse to [rects]
+            rects.append(newhouse)
+            plaatsing = True
+            pygame.display.update(rects)
+    
+
+
 
 #------------------------------------------------------------------
 # Main program loop                                                                                                   
 #------------------------------------------------------------------
+
+
+
 while True:
 
-<<<<<<< HEAD
-        random_pos = (randint(0,WIDTH), randint(0,HEIGHT))
-        for event in pygame.event.get():
-                if event.type == QUIT:
-                        pygame.quit()
-                        sys.exit()
+    random_pos = (randint(0,WIDTH), randint(0,HEIGHT))
+    for event in pygame.event.get():
+            if event.type == QUIT:
+                    pygame.quit()
+                    sys.exit()
 
-                        #check of een toets is ingedrukt, if so, check welke en plaats het Huisje
-                        #alle maten van huizen zijn tijdelijk gedeeld door 5 zodat het allemaal mooi op het scherm past.
-                        #randint zet ze random op het scherm - de breedte en hoogte van het huis+verplichtvrst zodat het allemaal op de map valt. 
-                if event.type == KEYDOWN:
-                        # toetsen: E = eengezinsswoning, M = Maison, B = Bungalow
-                        if event.key == K_e: #eensgezins
-                                huis_met_vrijstand = (x,y, (24, 24))
-                                pygame.draw.rect(screen, BLUE, (randint(24,WIDTH-24),randint(24,HEIGHT-24), 24, 24))
-                        elif event.key == K_b: #bungalow
-                                pygame.draw.rect(screen, RED, (randint(32,WIDTH-32),randint(27,HEIGHT-27), 32, 27))
-                        elif event.key == K_m: #maison
-                                pygame.draw.rect(screen, GREEN, (randint(46,WIDTH-46),randint(45,HEIGHT-45), 46, 45))
+                    #check of een toets is ingedrukt, if so, check welke en plaats het Huisje
+                    #alle maten van huizen zijn tijdelijk gedeeld door 5 zodat het allemaal mooi op het scherm past.
+                    #randint zet ze random op het scherm - de breedte en hoogte van het huis+verplichtvrst zodat het allemaal op de map valt. 
+            if event.type == KEYDOWN:
+                if event.key == K_q: # return to main
+                    screen.fill(BLACK)
+                
+               
+                if event.key == K_g: #go 
 
-                        #Om de huisjes ook handmatig te kunnen verplaatsen over het scherm, werkt nog niet, beginnetje
-                        if event.key == K_LEFT:
-                                movex = -1
-                        elif event.key == K_RIGHT:
-                                movex = +1
-                        elif event.key == K_UP:
-                                movey = -1
-                        elif event.key == K_DOWN:
-                                movey= +1
-                if event.type == KEYUP:
-                        if event.key == K_LEFT:
-                                movex = 0
-                        elif event.key == K_RIGHT:
-                                movex = 0
-                        elif event.key == K_UP:
-                                movey = 0
-                        elif event.key == K_DOWN:
-                                movey= 0
+                    #Plaatsing Maisons
+                    for y in range (total_Maisons):
 
-            # Loop voor het plaatsen van huizen
-            # Komt straks in plaats van de handmatige plaatsing die er nu nog staat
-            # voor de x en y coordinaten in 'render(x, y)'  moet een functie komen die een random x en y produceert maar zorgt dat ze niet overlappen.
-        #list voor om de huisjes in te appenden.
-        huizen = []
+                        maison = Maison(33, 45, RED)
+                        maison.render()
 
-        Hvariant = TwintigH()
-        for i in range(1, Hvariant.eengezins):
-            name =  "e%d" % (i)
-            e = Eengezin()
-            e.name(name)
-            e.render(x, y)
-            #append de huizen in een list
-            huizen.append(e)
-        for i in range(1, Hvariant.bungalow):
-            name = "b%d" % (i)
-            b = Bungalow()
-            b.name(name)
-            b.render(x, y)
-            #append de huizen in een list
-            huizen.append(b)
-        for i in range(1, Hvariant.maison):
-            name= "m%d" % (i)
-            m = Maison()
-            m.name(name)
-            m.render(x, y)
-            #append de huizen in een list
-            huizen.append(m)
-    
-    
+                        #add newhouse to [rects]
+                        rects.append(maison)
 
-        x+=movex
-        y+=movey
+                    for y in range (total_Bungalows):
 
-        pygame.display.update()
+                        bungalow = Bungalow(30, 22, BLUE)
+                        bungalow.render()
+
+                        #add newhouse to [rects]
+                        rects.append(bungalow)
+
+                    for y in range (total_Eensgezins):
+
+                        eengezins = Eengezins(24,24, GREEN)
+                        eengezins.render()
+
+                        #add newhouse to [rects]
+                        rects.append(eengezins)
+                          
+            
+                        pygame.display.update()
+
+
 
 
 #------------------------------------------------------------------
 # Alvast idee voor de classes van de huizen (waarschijnlijk fout, moet nog even in OOP duiken van Python)
 #------------------------------------------------------------------
-class Huis(object):
-
-        def __int__(self, hoogte, breedte, prijs, vrijstand_vrp, kleur, kleurvrs):
-                pygame.draw.rect(screen, BLUE, (10, 20, 100, 50))
-                self.hoogte = hoogte
-                self.breedte = breedte
-                self.prijs = prijs
-                self.vrijstand_vrp = vrijstand_vrp
-                self.kleur = kleur
-                self.kleurvrs = kleurvrs
-
-        def name(self, name):
-                self.name = name
-        
-        def draw(self,x,y):
-                self.x = x
-                self.y = y
-                pygame.draw.rect(screen,self.kleur(self.x, self.y, self.breedte, self.hoogte))
-                # huis + verplichte vrijstand moeten onderscheidbare oppervlakken zijn.
-                # gezien verplichte vrijstand ook 'gedeeld' kan worden.
-                return
-
-        def beweeg(self):
-                #TODO?
-                return
-
-        def flip(self):
-                #TODO?
-                return
 
 
 #------------------------------------------------------------------
@@ -175,7 +180,7 @@ class Huis(object):
 
 class TwintigH():        
 
-        def __init__(self, eengezins, maisons, bungalows):
+        def __init__(self , eengezins, maisons, bungalows):
                 self.eengezins = 12
                 self.bungalow = 5
                 self.maison = 3
