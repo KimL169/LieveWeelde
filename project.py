@@ -62,6 +62,8 @@ class Maison():
         self.totaal = pygame.draw.rect(screen, self.kleur, (self.x, self.y, self.breedte_totaal, self.hoogte_totaal))
         self.zonder_vrijstand = pygame.draw.rect(screen, self.kleur, (self.x, self.y, self.breedte, self.hoogte))
 
+    def move(self):
+
 class Bungalow():
 
     def __init__ (self, hoogte, breedte, kleur, vrijstand):
@@ -80,6 +82,11 @@ class Bungalow():
         # een verandering van huis.x en huisje.y zal nu allebei de rechthoeken evenredig bewegen.
         self.totaal = pygame.draw.rect(screen, self.kleur, (self.x, self.y, self.breedte_totaal, self.hoogte_totaal))
         self.zonder_vrijstand = pygame.draw.rect(screen, self.kleur, (self.x, self.y, self.breedte, self.hoogte))
+
+    def move(self):
+
+    def name(self, name):
+        self.name = name
 
 class Eengezins():
 
@@ -100,6 +107,7 @@ class Eengezins():
         self.totaal = pygame.draw.rect(screen, self.kleur, (self.x, self.y, self.breedte_totaal, self.hoogte_totaal))
         self.zonder_vrijstand = pygame.draw.rect(screen, self.kleur, (self.x, self.y, self.breedte, self.hoogte))
 
+    def move(self):
 
 #------------------------------------------------------------------
 # Functies. Deze zijn nog niet geschreven, maar heb ze opgedoken en dacht dat ze erg van pas zouden komen.
@@ -164,66 +172,37 @@ while True:
                 if event.key == K_g: #go 
 
                     #Plaatsing Maisons
-                    for y in range (total_Maisons):
+                    for i in range (total_Maisons):
 
                         maison = Maison(33, 45, RED, 6) #moet nog even veranderd worden naar juiste waarden
                         maison.render()
 
+                        naam = "%dm" % (i)
+                        maison.name(naam)
                         #add newhouse to [rects]
                         rects.append(maison)
                 
-                    for y in range (total_Bungalows):
+                    for i in range (total_Bungalows):
 
                         bungalow = Bungalow(30, 22, BLUE, 3) #moet nog even veranderd worden naar juiste waarden
                         bungalow.render()
+                        naam = "%db" % (i)
+                        bungalow.name(naam)
 
                         #add newhouse to [rects]
                         rects.append(bungalow)
 
-                    for y in range (total_Eensgezins):
+                    for i in range (total_Eensgezins):
 
                         eengezins = Eengezins(24, 24, GREEN, 2) #moet nog even veranderd worden naar juiste waarden
                         eengezins.render()
 
+                        naam = "%de" % (i)
+                        eengezins.name(naam)
+                        
                         #add newhouse to [rects]
                         rects.append(eengezins)
             
                         pygame.display.update()
-
-
-
-
-#------------------------------------------------------------------
-# Alvast idee voor de classes van de huizen (waarschijnlijk fout, moet nog even in OOP duiken van Python)
-#------------------------------------------------------------------
-
-
-#------------------------------------------------------------------
-# Classes van de verschillende Huizenvarianten
-#------------------------------------------------------------------
-
-class TwintigH():        
-
-        def __init__(self , eengezins, maisons, bungalows):
-                self.eengezins = 12
-                self.bungalow = 5
-                self.maison = 3
-                
-class VeertigH():
-
-        def __init__(self, eengezins, maisons, bungalows):
-                self.eengezins = 24
-                self.bungalow = 10
-                self.maison = 6
-        
-
-class ZestigH():
-
-        def __init__(self, eengezins, maisons, bungalows):
-                self.eengezins = 36
-                self.bungalow = 15
-                self.maison = 9
-                
-
 
 
