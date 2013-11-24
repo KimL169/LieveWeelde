@@ -47,7 +47,7 @@ class Maison():
 
     def __init__ (self, hoogte, breedte, kleur, vrijstand):
         self.hoogte = hoogte #nu nog met vrijstand included 
-        self.breedte = breedte
+        self.breedte = breedte # idem
         self.kleur = kleur
         self.vrijstand = vrijstand
         self.breedte_totaal = self.breedte + (self.vrijstand * 2)
@@ -62,28 +62,25 @@ class Maison():
         self.totaal = pygame.draw.rect(screen, self.kleur, (self.x, self.y, self.breedte_totaal, self.hoogte_totaal))
         self.zonder_vrijstand = pygame.draw.rect(screen, self.kleur, (self.x, self.y, self.breedte, self.hoogte))
 
-    def move(self):
+    def name(self, name):
+        self.name = name
 
 class Bungalow():
 
     def __init__ (self, hoogte, breedte, kleur, vrijstand):
         self.hoogte = hoogte #nu nog met vrijstand included 
-        self.breedte = breedte
+        self.breedte = breedte #idem
         self.kleur = kleur
         self.vrijstand = vrijstand
         self.breedte_totaal = self.breedte + (self.vrijstand * 2)
         self.hoogte_totaal = self.hoogte + (self.vrijstand * 2)
 
     def render(self):
-        #plaats huisje_zonder_vrijstand op dezelfde positie als met_vrijstand.
-        # breedte_totaal en hoogte_totaal omdat ook de verplichte vrijstand niet buiten het scherm mag vallen.
         self.x = randint(self.breedte_totaal, WIDTH-self.breedte_totaal)
         self.y = randint(self.hoogte_totaal, WIDTH-self.hoogte_totaal) 
-        # een verandering van huis.x en huisje.y zal nu allebei de rechthoeken evenredig bewegen.
+        
         self.totaal = pygame.draw.rect(screen, self.kleur, (self.x, self.y, self.breedte_totaal, self.hoogte_totaal))
         self.zonder_vrijstand = pygame.draw.rect(screen, self.kleur, (self.x, self.y, self.breedte, self.hoogte))
-
-    def move(self):
 
     def name(self, name):
         self.name = name
@@ -92,22 +89,21 @@ class Eengezins():
 
     def __init__ (self, hoogte, breedte, kleur, vrijstand):
         self.hoogte = hoogte #nu nog met vrijstand included 
-        self.breedte = breedte
+        self.breedte = breedte # idem
         self.kleur = kleur
         self.vrijstand = vrijstand
         self.breedte_totaal = self.breedte + (self.vrijstand * 2)
         self.hoogte_totaal = self.hoogte + (self.vrijstand * 2)
 
     def render(self):
-        #plaats huisje_zonder_vrijstand op dezelfde positie als met_vrijstand.
-        # breedte_totaal en hoogte_totaal omdat ook de verplichte vrijstand niet buiten het scherm mag vallen.
         self.x = randint(self.breedte_totaal, WIDTH-self.breedte_totaal)
         self.y = randint(self.hoogte_totaal, WIDTH-self.hoogte_totaal) 
-        # een verandering van huis.x en huisje.y zal nu allebei de rechthoeken evenredig bewegen.
+        
         self.totaal = pygame.draw.rect(screen, self.kleur, (self.x, self.y, self.breedte_totaal, self.hoogte_totaal))
         self.zonder_vrijstand = pygame.draw.rect(screen, self.kleur, (self.x, self.y, self.breedte, self.hoogte))
 
-    def move(self):
+    def name(self, name):
+        self.name = name
 
 #------------------------------------------------------------------
 # Functies. Deze zijn nog niet geschreven, maar heb ze opgedoken en dacht dat ze erg van pas zouden komen.
@@ -171,7 +167,6 @@ while True:
                
                 if event.key == K_g: #go 
 
-                    #Plaatsing Maisons
                     for i in range (total_Maisons):
 
                         maison = Maison(33, 45, RED, 6) #moet nog even veranderd worden naar juiste waarden
@@ -179,17 +174,16 @@ while True:
 
                         naam = "%dm" % (i)
                         maison.name(naam)
-                        #add newhouse to [rects]
+                        #deze list moet denk ik een dictionary worden met keys en values: key = name, value = object.
                         rects.append(maison)
-                
+
                     for i in range (total_Bungalows):
 
                         bungalow = Bungalow(30, 22, BLUE, 3) #moet nog even veranderd worden naar juiste waarden
                         bungalow.render()
+
                         naam = "%db" % (i)
                         bungalow.name(naam)
-
-                        #add newhouse to [rects]
                         rects.append(bungalow)
 
                     for i in range (total_Eensgezins):
@@ -199,10 +193,6 @@ while True:
 
                         naam = "%de" % (i)
                         eengezins.name(naam)
-                        
-                        #add newhouse to [rects]
                         rects.append(eengezins)
             
-                        pygame.display.update()
-
-
+                    pygame.display.update()
