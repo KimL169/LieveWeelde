@@ -21,8 +21,8 @@ total_Bungalows = int(total_Houses * 0.25)
 total_Eensgezins = int(total_Houses * 0.60)
 
 #display settings
-WIDTH = 320
-HEIGHT = 240
+WIDTH = 640
+HEIGHT = 480
 SCREEN_SIZE = (WIDTH, HEIGHT)
 screen = pygame.display.set_mode(SCREEN_SIZE)
 
@@ -35,9 +35,6 @@ GREEN = (  0, 255,   0) # = maison
 BLUE = (  0,   0, 255) # = eensgezins
 YELLOW = (250, 250, 210)
 
-x,y = 0, 0
-
-
 
 #--------------------------------
 # Classes voor de huisjes
@@ -46,11 +43,11 @@ x,y = 0, 0
 class Maison():
 
     def __init__ (self):
-        self.vrijstand = 12
-        self.w = 22
-        self.h = 21
-        self.w_vr = 46
-        self.h_vr = 45
+        self.vrijstand = 24
+        self.w = 44
+        self.h = 42
+        self.w_vr = 92
+        self.h_vr = 90
         self.x = randint(0, WIDTH-self.w_vr)
         self.y = randint(0, HEIGHT-self.h_vr)
         self.x_vr = self.x + self.vrijstand
@@ -61,8 +58,8 @@ class Maison():
         self.kleur_vrijstand = YELLOW
 
     def render(self):
-        self.total = pygame.draw.rect(screen, self.kleur_vrijstand, (self.x, self.y, self.w_vr, self.h_vr))
-        self.zonder_vrijstand = pygame.draw.rect(screen, self.kleur, (self.x_vr, self.y_vr, self.w, self.h))
+        self.total = pygame.draw.rect(screen, self.kleur_vrijstand, (self.x_vr, self.y_vr, self.w_vr, self.h_vr))
+        self.zonder_vrijstand = pygame.draw.rect(screen, self.kleur, (self.x, self.y, self.w, self.h))
 
     def name(self, name):
         self.name = name
@@ -70,11 +67,11 @@ class Maison():
 class Bungalow():
 
     def __init__ (self):
-        self.vrijstand = 6
-        self.w = 20
-        self.h = 15
-        self.w_vr = 32
-        self.h_vr = 27
+        self.vrijstand = 12
+        self.w = 40
+        self.h = 30
+        self.w_vr = 64
+        self.h_vr = 54
         self.x = randint(self.w_vr, WIDTH-self.w_vr)
         self.y = randint(self.h_vr, HEIGHT-self.h_vr)
         self.x_vr = self.x + self.vrijstand
@@ -94,11 +91,11 @@ class Bungalow():
 class Eengezins():
 
     def __init__ (self):
-        self.vrijstand = 4
-        self.w = 16
-        self.h = 16
-        self.w_vr = 24
-        self.h_vr = 24
+        self.vrijstand = 8
+        self.w = 32
+        self.h = 32
+        self.w_vr = 48
+        self.h_vr = 48
         self.x = randint(self.w_vr, WIDTH-self.w_vr)
         self.y = randint(self.h_vr, HEIGHT-self.h_vr)
         self.x_vr = self.x + self.vrijstand
@@ -130,7 +127,7 @@ def doHousesOverlap(rect1, rect2):
     return False
 
 def isPointInsideRect(x, y, huis):
-    if (x > huis.rect_vr.left) and (x < huis.rect_vr.right) and (y > huis.rect_vr.top) and (y < huis.rect_vr.bottom):
+    if (x >= huis.rect_vr.left) and (x <= huis.rect_vr.right) and (y >= huis.rect_vr.top) and (y <= huis.rect_vr.bottom):
         return True
     else:
         return False
