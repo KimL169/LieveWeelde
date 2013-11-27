@@ -2,6 +2,7 @@ import pygame, sys
 from math import e, pi, cos, sin, sqrt
 from random import randint
 from pygame.locals import *
+import datetime
 
 pygame.init()
 
@@ -13,7 +14,7 @@ pygame.init()
 houselist = []    
 
 #define total number of houses
-total_Houses =40
+total_Houses = 40
 
 #define total number of each house type
 total_Maisons = int(total_Houses * 0.15) 
@@ -64,6 +65,10 @@ class Maison():
     def name(self, name):
         self.name = name
 
+    def move(self, x, y):
+        self.rect.move(x, y)
+        self.rect_vr.move(x, y)
+
 class Bungalow():
 
     def __init__ (self):
@@ -87,6 +92,10 @@ class Bungalow():
 
     def name(self, name):
         self.name = name
+
+    def move(self, x, y):
+        self.rect.move(x, y)
+        self.rect_vr.move(x, y)
 
 class Eengezins():
 
@@ -112,6 +121,10 @@ class Eengezins():
 
     def name(self, name):
         self.name = name
+
+    def move(self, x, y):
+        self.rect.move(x, y)
+        self.rect_vr.move(x, y)
 
 
 # Collision Detect functies
@@ -141,6 +154,22 @@ def overlapCheck(huisje):
             return True
 
     return False
+
+
+# Distance measure function
+#-----------------------------------------------------------------
+
+def measureDistance():
+    filename = "distances_%dHuizen_%d.txt" % (total_Houses, randint(0,10000000)) #tijdelijk
+    f = open(filename, 'w')
+    for a in houselist:
+        for b in houselist:
+            #check so it's not measuring distance to itself.
+            if b != a:
+                distance = "%s > %s:  x%d, y%d\n" % (a.name, b.name, a.rect.left - b.rect.left, a.rect.top - b.rect.top)
+                f.write(distance)
+
+
 
 
 #------------------------------------------------------------------
@@ -201,4 +230,15 @@ while True:
 
                     pygame.display.update()
 
+                #even tijdelijke test om de huisjes rond te bewegen. 
+                if event.key == K_o: #move all houses one place to the left.
+                    screen.fill(BLACK)
+                    for house in houselist:
+                        house.rect.x += 10
+                        house.rect_vr.x += 10
+                    for house in houselist:
+                        house.render()
+                    pygame.display.update()
+                if event.key == K_m:
+                    measureDistance()
 
