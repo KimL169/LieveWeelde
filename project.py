@@ -13,7 +13,7 @@ pygame.init()
 houselist = []    
 
 #define total number of houses
-total_Houses = 60
+total_Houses = 40
 
 #define total number of each house type
 total_Maisons = int(total_Houses * 0.15) 
@@ -51,12 +51,12 @@ class Maison():
         self.h = 21
         self.w_vr = 46
         self.h_vr = 45
-        self.x = randint(self.w_vr, WIDTH-self.w_vr)
-        self.y = randint(self.h_vr, HEIGHT-self.h_vr)
+        self.x = randint(0, WIDTH-self.w_vr)
+        self.y = randint(0, HEIGHT-self.h_vr)
         self.x_vr = self.x + self.vrijstand
         self.y_vr = self.y + self.vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)  # huis als Rect zodat we de pygame rect library functions kunnen gebruiken
-        self.rect_vrijstand = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
+        self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
         self.kleur = BLUE
         self.kleur_vrijstand = YELLOW
 
@@ -80,7 +80,7 @@ class Bungalow():
         self.x_vr = self.x + self.vrijstand
         self.y_vr = self.y + self.vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)
-        self.rect_vrijstand = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
+        self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
         self.kleur = RED
         self.kleur_vrijstand = YELLOW
 
@@ -104,7 +104,7 @@ class Eengezins():
         self.x_vr = self.x + self.vrijstand
         self.y_vr = self.y + self.vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)
-        self.rect_vrijstand = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
+        self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
         self.kleur = GREEN
         self.kleur_vrijstand = YELLOW
 
@@ -118,58 +118,33 @@ class Eengezins():
 
 # Collision Detect functies
 #------------------------------------------------------------------
-'''
-def overlapDetect(x1, y1, w1, h1, x2, y2, w2, h2):
-    
-    if (x2+w2>=x1>=x2 and y2+h2>=y1>=y2):
 
-        return true
-
-    elif (x2+w2>=x1+w1>=x2 and y2+h2>=y1>=y2):
-
-        return true
-
-    elif (x2+w2>=x1>=x2 and y2+h2>=y1+h1>=y2):
-
-        return true
-        
-    elif (x2+w2>=x1+w1>=x2 and y2+h2>=y1+h1>=y2):
-
-        return true
-
-    else: 
-
-        return false
-
-def collisionDetect(x, y, w, h, houselist):
-
-    if houselist == 0:
-        return False
-
-    for house in houselist:
-
-        if overlapDetect(x, y, w, h, house.x, house.y, house.w, house.h) == True:
-            return True
-
-        else:
-            return False
-'''
-'''
 def doHousesOverlap(rect1, rect2):
     for a, b in [(rect1, rect2), (rect2, rect1)]:
         # Check if a's corners are inside b
-        if ((isPointInsideRect(a.left, a.top, b)) or
-            (isPointInsideRect(a.left, a.bottom, b)) or
-            (isPointInsideRect(a.right, a.top, b)) or
-            (isPointInsideRect(a.right, a.bottom, b))):
+        if ((isPointInsideRect(a.rect_vr.left, a.rect_vr.top, b)) or
+            (isPointInsideRect(a.rect_vr.left, a.rect_vr.bottom, b)) or
+            (isPointInsideRect(a.rect_vr.right, a.rect_vr.top, b)) or
+            (isPointInsideRect(a.rect_vr.right, a.rect_vr.bottom, b))):
             return True
     return False
-def isPointInsideRect(x, y, rect):
-    if (x > rect.left) and (x < rect.right) and (y > rect.top) and (y < rect.bottom):
+
+def isPointInsideRect(x, y, huis):
+    if (x > huis.rect_vr.left) and (x < huis.rect_vr.right) and (y > huis.rect_vr.top) and (y < huis.rect_vr.bottom):
         return True
     else:
         return False
-'''
+
+def overlapCheck(huisje):
+
+    for house in houselist:
+
+        if doHousesOverlap(huisje, house) == True:
+            return True
+
+    return False
+
+
 #------------------------------------------------------------------
 # Main program loop                                                                                                   
 #------------------------------------------------------------------
@@ -182,9 +157,7 @@ while True:
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-                #check of een toets is ingedrukt, if so, check welke en plaats het Huisje
-                #alle maten van huizen zijn tijdelijk gedeeld door 5 zodat het allemaal mooi op het scherm past.
-                #randint zet ze random op het scherm - de w en h van het huis+verplichtvrst zodat het allemaal op de map valt. 
+                
             if event.type == KEYDOWN:
                 if event.key == K_q: # return to main
                     screen.fill(BLACK)
@@ -192,40 +165,41 @@ while True:
                 counter_m = 0
                 counter_b = 0
                 counter_e = 0
-                if event.key == K_g: #go 
+                if event.key == K_g: # place houses on screen
 
-                    while counter_m != total_Maisons:
+                    while counter_m < total_Maisons:
 
                         maison = Maison() 
 
-                        if maison.rect_vrijstand.collidelist(houselist) == -1:
+                        if overlapCheck(maison) == False:
                             counter_m += 1
-                            maison.render()
                             naam = "%dm" % (counter_m)
                             maison.name(naam)
                             houselist.append(maison)
 
                         
-                    while counter_b != total_Bungalows:
+                    while counter_b < total_Bungalows:
 
                         bungalow = Bungalow() 
 
-                        if bungalow.rect_vrijstand.collidelist(houselist) == -1:
+                        if overlapCheck(bungalow) == False:
                             counter_b += 1
-                            bungalow.render()
                             naam = "%db" % (counter_b)
                             bungalow.name(naam)
                             houselist.append(bungalow)
 
-                    while counter_e != total_Eensgezins:
+                    while counter_e < total_Eensgezins:
 
                         eengezins = Eengezins() 
 
-                        if eengezins.rect_vrijstand.collidelist(houselist) == -1:
+                        if overlapCheck(eengezins) == False:
                             counter_e += 1
-                            eengezins.render()
                             naam = "%de" % (counter_e)
                             eengezins.name(naam)
                             houselist.append(eengezins)
-            
+                    
+
+                    for house in houselist:
+                        house.render()
+
                     pygame.display.update()
