@@ -152,7 +152,6 @@ def overlapCheck(huisje):
 
 while True:
 
-    random_pos = (randint(0,WIDTH), randint(0,HEIGHT))
     for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -203,3 +202,5 @@ while True:
                         house.render()
 
                     pygame.display.update()
+
+
