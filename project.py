@@ -13,7 +13,7 @@ pygame.init()
 houselist = []    
 
 #define total number of houses
-total_Houses = 40
+total_Houses =40
 
 #define total number of each house type
 total_Maisons = int(total_Houses * 0.15) 
@@ -48,18 +48,18 @@ class Maison():
         self.h = 42
         self.w_vr = 92
         self.h_vr = 90
-        self.x = randint(0, WIDTH-self.w_vr)
-        self.y = randint(0, HEIGHT-self.h_vr)
-        self.x_vr = self.x + self.vrijstand
-        self.y_vr = self.y + self.vrijstand
+        self.x = randint(self.vrijstand, WIDTH-self.w_vr)
+        self.y = randint(self.vrijstand, HEIGHT-self.h_vr)
+        self.x_vr = self.x - self.vrijstand
+        self.y_vr = self.y - self.vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)  # huis als Rect zodat we de pygame rect library functions kunnen gebruiken
         self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
         self.kleur = BLUE
         self.kleur_vrijstand = YELLOW
 
     def render(self):
-        self.total = pygame.draw.rect(screen, self.kleur_vrijstand, (self.x_vr, self.y_vr, self.w_vr, self.h_vr))
-        self.zonder_vrijstand = pygame.draw.rect(screen, self.kleur, (self.x, self.y, self.w, self.h))
+        pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
+        pygame.draw.rect(screen, self.kleur, (self.rect))
 
     def name(self, name):
         self.name = name
@@ -72,18 +72,18 @@ class Bungalow():
         self.h = 30
         self.w_vr = 64
         self.h_vr = 54
-        self.x = randint(self.w_vr, WIDTH-self.w_vr)
-        self.y = randint(self.h_vr, HEIGHT-self.h_vr)
-        self.x_vr = self.x + self.vrijstand
-        self.y_vr = self.y + self.vrijstand
+        self.x = randint(self.vrijstand, WIDTH-self.w_vr)
+        self.y = randint(self.vrijstand, HEIGHT-self.h_vr)
+        self.x_vr = self.x - self.vrijstand
+        self.y_vr = self.y - self.vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)
         self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
         self.kleur = RED
         self.kleur_vrijstand = YELLOW
 
     def render(self):
-        self.total = pygame.draw.rect(screen, self.kleur_vrijstand, (self.x, self.y, self.w_vr, self.h_vr))
-        self.zonder_vrijstand = pygame.draw.rect(screen, self.kleur, (self.x_vr, self.y_vr, self.w, self.h))
+        pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
+        pygame.draw.rect(screen, self.kleur, (self.rect))
 
     def name(self, name):
         self.name = name
@@ -96,18 +96,19 @@ class Eengezins():
         self.h = 32
         self.w_vr = 48
         self.h_vr = 48
-        self.x = randint(self.w_vr, WIDTH-self.w_vr)
-        self.y = randint(self.h_vr, HEIGHT-self.h_vr)
-        self.x_vr = self.x + self.vrijstand
-        self.y_vr = self.y + self.vrijstand
+        self.x = randint(self.vrijstand, WIDTH-self.w_vr)
+        self.y = randint(self.vrijstand, HEIGHT-self.h_vr)
+        self.x_vr = self.x - self.vrijstand
+        self.y_vr = self.y - self.vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)
         self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
         self.kleur = GREEN
         self.kleur_vrijstand = YELLOW
 
     def render(self):
-        self.total = pygame.draw.rect(screen, self.kleur_vrijstand, (self.x, self.y, self.w_vr, self.h_vr))
-        self.zonder_vrijstand = pygame.draw.rect(screen, self.kleur, (self.x_vr, self.y_vr, self.w, self.h))
+        pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
+        pygame.draw.rect(screen, self.kleur, (self.rect))
+
 
     def name(self, name):
         self.name = name
