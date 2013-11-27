@@ -196,7 +196,7 @@ while True:
 
                     while counter_m != total_Maisons:
 
-                        maison = Maison() #moet nog even veranderd worden naar juiste waarden
+                        maison = Maison() 
 
                         if maison.rect_vrijstand.collidelist(houselist) == -1:
                             counter_m += 1
@@ -208,7 +208,7 @@ while True:
                         
                     while counter_b != total_Bungalows:
 
-                        bungalow = Bungalow() #moet nog even veranderd worden naar juiste waarden
+                        bungalow = Bungalow() 
 
                         if bungalow.rect_vrijstand.collidelist(houselist) == -1:
                             counter_b += 1
@@ -219,7 +219,7 @@ while True:
 
                     while counter_e != total_Eensgezins:
 
-                        eengezins = Eengezins() #moet nog even veranderd worden naar juiste waarden
+                        eengezins = Eengezins() 
 
                         if eengezins.rect_vrijstand.collidelist(houselist) == -1:
                             counter_e += 1
