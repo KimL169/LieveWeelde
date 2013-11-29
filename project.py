@@ -1,5 +1,5 @@
 import pygame, sys
-from math import e, pi, cos, sin, sqrt
+from math import e, pi, cos, sin, sqrt, fabs
 from random import randint
 from pygame.locals import *
 import datetime
@@ -11,10 +11,12 @@ pygame.init()
 #------------------------------------------------------------------
 
 #lijst met alle rectangles, voor collide check
-houselist = []    
+houselist = []  
+afstanden = []  
+vrijstand = []
 
 #define total number of houses
-total_Houses = 40
+total_Houses = 20
 
 #define total number of each house type
 total_Maisons = int(total_Houses * 0.15) 
@@ -190,56 +192,63 @@ def measureDistance():
                 distance = "%s > %s:  x%d, y%d\n" % (a.name, b.name, a.rect.left - b.rect.left, a.rect.top - b.rect.top)
                 f.write(distance)
 
-def positionHelper(a, b):
-    if b.rect_vr.bottom - a.rect_vr.top > 0:
-        # all b.y are above a.y
-        if b.rect_vr.left - a.rect_vr.right > 0:
-            # house B is top right of house A  (diagonal top right)
-            return 'topright'
-        elif a.rect_vr.left - b.rect_vr.right > 0:
-            # house B is top left of house A (diagonal top left)
-            return 'topleft'
-        elif b.rect_vr.left - a.rect_vr.right < 0:
-
-            if b.rect_vr.left - a.rect_vr.left > 0:
-                # b is above a (vertical Top)
-                return 'top'
-            elif b.rect_vr.right - a.rect_vr.left > 0:
-                # b is above a (vertical Top)
-                return 'top'
-    if b.rect_vr.bottom - a.rect_vr.top < 0:
-
-        if a.rect_vr.bottom - b.rect_vr.top > 0:
-            # all b.y are below a.y
-            if b.rect_vr.left - a.rect_vr.right > 0:
-                # house B is bottom right of house A  (diagonal bottom right)
-                return 'bottomright'
-            elif a.rect_vr.left - b.rect_vr.right > 0:
-                # house B is bottom left of house A (diagonal bottom left)
-                return 'bottomleft'
-            elif b.rect_vr.left - a.rect_vr.right < 0:
-
-                if b.rect_vr.left - a.rect_vr.left > 0:
-                    # b is above a (vertical bottom)
-                    return 'bottom'
-                elif b.rect_vr.right - a.rect_vr.left > 0:
-                    # b is above a (vertical bottom)  
-                    return 'bottom'   
-
-        elif a.rect_vr.bottom - b.rect_vr.top < 0:
-            # house b is either to the left or to the right of house a (horizontal)
-            if b.rect_vr.left - a.rect_vr.right > 0:
-                # house B is to the right of house A  (horizontal right)
-                return 'right'
-            elif a.rect_vr.left - b.rect_vr.right > 0: 
-                # house B is to the left of house a  (horizontal left)
-                return 'left'
-
 def houseposition():
     for a in houselist:
+        afstanden = []
         for b in houselist:
             if b != a:
-                print "%s > %s:  %s" % (a.name, b.name, positionHelper(a, b))
+                print "%s > %s:  %s" % (a.name, b.name, positionHelper(a, b, afstanden))
+        vrijstand.append(min(afstanden))
+
+def positionHelper(a, b, afstanden):
+
+    if b.rect.bottom - a.rect.top < 0: #above
+
+        if b.rect.left - a.rect.right > 0: # topright
+            afstand = (((b.rect.left - a.rect.right)**2 + (b.rect.bottom - a.rect.top)**2) **(1.0/2))/4
+            print afstand
+            afstanden.append(afstand)
+            return 'topright'
+        elif a.rect.left - b.rect.right > 0: # topleft
+            afstand = (((a.rect.left - b.rect.right)**2 + (b.rect.bottom - a.rect.top)**2) **(1.0/2))/4
+            print afstand
+            afstanden.append(afstand)
+            return 'topleft'
+        else: #top
+            afstand = fabs((a.rect.bottom - b.rect.top)/4) 
+            print afstand
+            afstanden.append(afstand)
+            return 'top'
+
+    elif a.rect.bottom - b.rect.top < 0: #below
+
+        if b.rect.left - a.rect.right > 0: #bottomright
+            afstand = (((b.rect.left - a.rect.right)**2 + (a.rect.bottom -b.rect.top)**2) **(1.0/2))/4
+            print afstand
+            afstanden.append(afstand)
+            return 'bottomright'
+        elif a.rect.left - b.rect.right > 0: #bottomleft
+            afstand = (((a.rect.left - b.rect.right)**2 + (a.rect.bottom -b.rect.top)**2) **(1.0/2))/4
+            print afstand
+            afstanden.append(afstand)
+            return 'bottomleft'
+        else: #bottom
+            afstand = fabs((b.rect.bottom - a.rect.top)/4)
+            print afstand
+            afstanden.append(afstand)
+            return 'bottom'
+
+    elif a.rect.left - b.rect.right > 0: #left
+        afstand = fabs((a.rect.left - b.rect.right)/4)
+        print afstand
+        afstanden.append(afstand)
+        return 'left'
+    elif b.rect.left - a.rect.right > 0: #right
+        afstand = fabs((b.rect.left - a.rect.right)/4)
+        print afstand
+        afstanden.append(afstand)
+        return 'right'
+
 
 
 #------------------------------------------------------------------
