@@ -61,13 +61,20 @@ class Maison():
     def render(self):
         pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
         pygame.draw.rect(screen, self.kleur, (self.rect))
+        myfont = pygame.font.SysFont("monospace", 15)
+        label = myfont.render(house.name, 1, (RED))
+        screen.blit(label, (self.x_vr, self.y_vr))
 
     def name(self, name):
         self.name = name
 
-    def move(self, x, y):
-        self.rect.move(x, y)
-        self.rect_vr.move(x, y)
+    # Voor manual movement met muis
+    def manual_move(self):
+        pos = pygame.mouse.get_pos()
+        self.rect.x = pos[0]
+        self.rect_vr.x = pos[0]
+        self.rect.y = pos[1]
+        self.rect_vr.y = pos[1]  
 
 class Bungalow():
 
@@ -89,13 +96,20 @@ class Bungalow():
     def render(self):
         pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
         pygame.draw.rect(screen, self.kleur, (self.rect))
+        myfont = pygame.font.SysFont("monospace", 15)
+        label = myfont.render(house.name, 1, (BLUE))
+        screen.blit(label, (self.x_vr, self.y_vr))
 
     def name(self, name):
         self.name = name
 
-    def move(self, x, y):
-        self.rect.move(x, y)
-        self.rect_vr.move(x, y)
+    # Voor manual movement met muis.
+    def manual_move(self):
+        pos = pygame.mouse.get_pos()
+        self.rect.x = pos[0]
+        self.rect_vr.x = pos[0]
+        self.rect.y = pos[1]
+        self.rect_vr.y = pos[1] 
 
 class Eengezins():
 
@@ -117,15 +131,22 @@ class Eengezins():
     def render(self):
         pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
         pygame.draw.rect(screen, self.kleur, (self.rect))
+        myfont = pygame.font.SysFont("monospace", 15)
+        label = myfont.render(house.name, 1, (RED))
+        screen.blit(label, (self.x_vr, self.y_vr))
 
 
     def name(self, name):
         self.name = name
 
-    def move(self, x, y):
-        self.rect.move(x, y)
-        self.rect_vr.move(x, y)
-
+    # Manual movement met muis.
+    def manual_move(self):
+        pos = pygame.mouse.get_pos()
+        self.rect.x = pos[0]
+        self.rect_vr.x = pos[0]
+        self.rect.y = pos[1]
+        self.rect_vr.y = pos[1]     
+        
 
 # Collision Detect functies
 #------------------------------------------------------------------
@@ -169,7 +190,56 @@ def measureDistance():
                 distance = "%s > %s:  x%d, y%d\n" % (a.name, b.name, a.rect.left - b.rect.left, a.rect.top - b.rect.top)
                 f.write(distance)
 
+def positionHelper(a, b):
+    if b.rect_vr.bottom - a.rect_vr.top > 0:
+        # all b.y are above a.y
+        if b.rect_vr.left - a.rect_vr.right > 0:
+            # house B is top right of house A  (diagonal top right)
+            return 'topright'
+        elif a.rect_vr.left - b.rect_vr.right > 0:
+            # house B is top left of house A (diagonal top left)
+            return 'topleft'
+        elif b.rect_vr.left - a.rect_vr.right < 0:
 
+            if b.rect_vr.left - a.rect_vr.left > 0:
+                # b is above a (vertical Top)
+                return 'top'
+            elif b.rect_vr.right - a.rect_vr.left > 0:
+                # b is above a (vertical Top)
+                return 'top'
+    if b.rect_vr.bottom - a.rect_vr.top < 0:
+
+        if a.rect_vr.bottom - b.rect_vr.top > 0:
+            # all b.y are below a.y
+            if b.rect_vr.left - a.rect_vr.right > 0:
+                # house B is bottom right of house A  (diagonal bottom right)
+                return 'bottomright'
+            elif a.rect_vr.left - b.rect_vr.right > 0:
+                # house B is bottom left of house A (diagonal bottom left)
+                return 'bottomleft'
+            elif b.rect_vr.left - a.rect_vr.right < 0:
+
+                if b.rect_vr.left - a.rect_vr.left > 0:
+                    # b is above a (vertical bottom)
+                    return 'bottom'
+                elif b.rect_vr.right - a.rect_vr.left > 0:
+                    # b is above a (vertical bottom)  
+                    return 'bottom'   
+
+        elif a.rect_vr.bottom - b.rect_vr.top < 0:
+            # house b is either to the left or to the right of house a (horizontal)
+            if b.rect_vr.left - a.rect_vr.right > 0:
+                # house B is to the right of house A  (horizontal right)
+                return 'right'
+            elif a.rect_vr.left - b.rect_vr.right > 0: 
+                # house B is to the left of house a  (horizontal left)
+                return 'left'
+
+def houseposition():
+    for a in houselist:
+        for b in houselist:
+            if b != a:
+                print "%s > %s:  %s" % (a.name, b.name, positionHelper(a, b))
 
 
 #------------------------------------------------------------------
@@ -233,12 +303,11 @@ while True:
                 #even tijdelijke test om de huisjes rond te bewegen. 
                 if event.key == K_o: #move all houses one place to the left.
                     screen.fill(BLACK)
-                    for house in houselist:
-                        house.rect.x += 10
-                        house.rect_vr.x += 10
+                    house.rect.x += 10
+                    house.rect_vr.x += 10
                     for house in houselist:
                         house.render()
                     pygame.display.update()
                 if event.key == K_m:
-                    measureDistance()
+                    houseposition()
 
