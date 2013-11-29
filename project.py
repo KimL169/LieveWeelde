@@ -2,6 +2,7 @@ import pygame, sys, csv
 from math import e, pi, cos, sin, sqrt, fabs
 from random import randint
 from pygame.locals import *
+import datetime, time
 
 pygame.init()
 
@@ -19,7 +20,7 @@ afstanden = []
 vrijstand = []
 
 #define total number of houses
-total_Houses =40
+total_Houses = 40
 
 #define total number of each house type
 total_Maisons = int(total_Houses * 0.15) 
@@ -141,6 +142,11 @@ class Eengezins():
 # Collision Detect functies
 #------------------------------------------------------------------
 
+def screenCapture():
+    
+    imagename = "screen_%sh_w%d.jpg" %(total_Houses, Total_Value)
+    pygame.image.save(screen, imagename)
+
 def doHousesOverlap(rect1, rect2):
     for a, b in [(rect1, rect2), (rect2, rect1)]:
         # Check if a's corners are inside b
@@ -245,7 +251,7 @@ def measureValue():
 
     Total_Value = sum(prices)
     print "Totale waarde van wijk is: " + str(Total_Value)
-
+    return Total_Value
 #------------------------------------------------------------------
 # Main program loop                                                                                                   
 #------------------------------------------------------------------
@@ -260,7 +266,8 @@ while True:
                 
             if event.type == KEYDOWN:
                 if event.key == K_q: # return to main
-                    screen.fill(BLACK)
+                    pygame.quit()
+                    sys.exit()     
                 
                 counter_m = 0
                 counter_b = 0
@@ -302,6 +309,11 @@ while True:
                     for house in houselist:
                         house.render()
 
+                    #bepaal vrijstand, print screen capture en totale waarde
+                    houseposition()
+                    Total_Value = measureValue()
+                    screenCapture()
+
                     pygame.display.update()
 
                 if event.key == K_o: #move all houses one place to the left.
@@ -312,11 +324,4 @@ while True:
                     for house in houselist:
                         house.render()
                     pygame.display.update()
-
-                if event.key == K_m:
-                    houseposition()
-
-                if event.key == K_w:
-                    measureValue()
-
  
