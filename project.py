@@ -197,8 +197,13 @@ def houseposition():
         afstanden = []
         for b in houselist:
             if b != a:
-                print "%s > %s:  %s" % (a.name, b.name, positionHelper(a, b, afstanden))
+               positionHelper(a, b, afstanden)
         vrijstand.append(min(afstanden))
+    counter = 0
+    
+    for house in houselist:
+        print "%s: %.3f" % (house.name, vrijstand[counter])
+        counter += 1
 
 def positionHelper(a, b, afstanden):
 
