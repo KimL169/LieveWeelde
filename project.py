@@ -274,7 +274,7 @@ while True:
                 counter_e = 0
                 if event.key == K_g: # place houses on screen
 
-                    while counter_m < total_Maisons:
+                    while countegit r_m < total_Maisons:
 
                         maison = Maison() 
 
@@ -324,4 +324,6 @@ while True:
                     for house in houselist:
                         house.render()
                     pygame.display.update()
+                if event.key == K_r:
+                    init() 
  
