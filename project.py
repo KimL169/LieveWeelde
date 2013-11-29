@@ -19,7 +19,7 @@ afstanden = []
 vrijstand = []
 
 #define total number of houses
-total_Houses =20
+total_Houses =40
 
 #define total number of each house type
 total_Maisons = int(total_Houses * 0.15) 
@@ -225,18 +225,22 @@ def positionHelper(a, b, afstanden):
 
 def measureValue():
     prices = []
+    counter = 0
     for house in houselist:
         for huis in range(total_Maisons):
             if house == maison:
-                price = float(house.waarde + (((vrijstand - house.verplichte_vrijstand)/4) * (house.waarde * 0.06)))
+                price = float(house.waarde + (((vrijstand[counter] - house.verplichte_vrijstand)/4) * (house.waarde * 0.06)))
+                counter += 1
                 prices.append(price)
         for huis in range(total_Bungalows):
             if house == bungalow:
-                price = float(house.waarde + (((vrijstand - house.verplichte_vrijstand)/4) * (house.waarde * 0.04)))
+                price = float(house.waarde + (((vrijstand[counter] - house.verplichte_vrijstand)/4) * (house.waarde * 0.04)))
+                counter += 1
                 prices.append(price)
         for huis in range(total_Eensgezins):
             if house == eengezins:
-                price = float(house.waarde + (((vrijstand - house.verplichte_vrijstand)/4) * (house.waarde * 0.03)))
+                price = float(house.waarde + (((vrijstand[counter] - house.verplichte_vrijstand)/4) * (house.waarde * 0.03)))
+                counter += 1
                 prices.append(price)
 
     Total_Value = sum(prices)
