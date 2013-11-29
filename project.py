@@ -1,8 +1,7 @@
-import pygame, sys
+import pygame, sys, csv
 from math import e, pi, cos, sin, sqrt, fabs
 from random import randint
 from pygame.locals import *
-import datetime
 
 pygame.init()
 
@@ -11,12 +10,16 @@ pygame.init()
 #------------------------------------------------------------------
 
 #lijst met alle rectangles, voor collide check
-houselist = []  
-afstanden = []  
+houselist = []    
+
+# lijst met alle afstanden tot andere huizen
+afstanden = []
+
+# lijst met vrijstand voor elk huis
 vrijstand = []
 
 #define total number of houses
-total_Houses = 20
+total_Houses =20
 
 #define total number of each house type
 total_Maisons = int(total_Houses * 0.15) 
@@ -33,9 +36,9 @@ screen = pygame.display.set_mode(SCREEN_SIZE)
 #kleurtjes
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-RED = (255,   0,   0)  # = bungalow
-GREEN = (  0, 255,   0) # = maison
-BLUE = (  0,   0, 255) # = eensgezins
+RED = (255,   0,   0)  
+GREEN = (  0, 255,   0)
+BLUE = (  0,   0, 255) 
 YELLOW = (250, 250, 210)
 
 
@@ -46,19 +49,21 @@ YELLOW = (250, 250, 210)
 class Maison():
 
     def __init__ (self):
-        self.vrijstand = 24
+        self.verplichte_vrijstand = 24
         self.w = 44
         self.h = 42
         self.w_vr = 92
         self.h_vr = 90
-        self.x = randint(self.vrijstand, WIDTH-self.w_vr)
-        self.y = randint(self.vrijstand, HEIGHT-self.h_vr)
-        self.x_vr = self.x - self.vrijstand
-        self.y_vr = self.y - self.vrijstand
+        self.x = randint(self.verplichte_vrijstand, WIDTH-self.w_vr)
+        self.y = randint(self.verplichte_vrijstand, HEIGHT-self.h_vr)
+        self.x_vr = self.x - self.verplichte_vrijstand
+        self.y_vr = self.y - self.verplichte_vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)  # huis als Rect zodat we de pygame rect library functions kunnen gebruiken
         self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
         self.kleur = BLUE
         self.kleur_vrijstand = YELLOW
+        self.waarde = 610000
+        
 
     def render(self):
         pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
@@ -69,31 +74,27 @@ class Maison():
 
     def name(self, name):
         self.name = name
-
-    # Voor manual movement met muis
-    def manual_move(self):
-        pos = pygame.mouse.get_pos()
-        self.rect.x = pos[0]
-        self.rect_vr.x = pos[0]
-        self.rect.y = pos[1]
-        self.rect_vr.y = pos[1]  
+        
 
 class Bungalow():
 
     def __init__ (self):
-        self.vrijstand = 12
+        self.verplichte_vrijstand = 12
         self.w = 40
         self.h = 30
         self.w_vr = 64
         self.h_vr = 54
-        self.x = randint(self.vrijstand, WIDTH-self.w_vr)
-        self.y = randint(self.vrijstand, HEIGHT-self.h_vr)
-        self.x_vr = self.x - self.vrijstand
-        self.y_vr = self.y - self.vrijstand
+        self.x = randint(self.verplichte_vrijstand, WIDTH-self.w_vr)
+        self.y = randint(self.verplichte_vrijstand, HEIGHT-self.h_vr)
+        self.x_vr = self.x - self.verplichte_vrijstand
+        self.y_vr = self.y - self.verplichte_vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)
         self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
         self.kleur = RED
         self.kleur_vrijstand = YELLOW
+        self.waarde = 399000
+
+        
 
     def render(self):
         pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
@@ -105,30 +106,25 @@ class Bungalow():
     def name(self, name):
         self.name = name
 
-    # Voor manual movement met muis.
-    def manual_move(self):
-        pos = pygame.mouse.get_pos()
-        self.rect.x = pos[0]
-        self.rect_vr.x = pos[0]
-        self.rect.y = pos[1]
-        self.rect_vr.y = pos[1] 
 
 class Eengezins():
 
     def __init__ (self):
-        self.vrijstand = 8
+        self.verplichte_vrijstand = 8
         self.w = 32
         self.h = 32
         self.w_vr = 48
         self.h_vr = 48
-        self.x = randint(self.vrijstand, WIDTH-self.w_vr)
-        self.y = randint(self.vrijstand, HEIGHT-self.h_vr)
-        self.x_vr = self.x - self.vrijstand
-        self.y_vr = self.y - self.vrijstand
+        self.x = randint(self.verplichte_vrijstand, WIDTH-self.w_vr)
+        self.y = randint(self.verplichte_vrijstand, HEIGHT-self.h_vr)
+        self.x_vr = self.x - self.verplichte_vrijstand
+        self.y_vr = self.y - self.verplichte_vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)
         self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
         self.kleur = GREEN
         self.kleur_vrijstand = YELLOW
+        self.waarde = 285000
+        
 
     def render(self):
         pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
@@ -141,14 +137,6 @@ class Eengezins():
     def name(self, name):
         self.name = name
 
-    # Manual movement met muis.
-    def manual_move(self):
-        pos = pygame.mouse.get_pos()
-        self.rect.x = pos[0]
-        self.rect_vr.x = pos[0]
-        self.rect.y = pos[1]
-        self.rect_vr.y = pos[1]     
-        
 
 # Collision Detect functies
 #------------------------------------------------------------------
@@ -178,20 +166,6 @@ def overlapCheck(huisje):
 
     return False
 
-
-# Distance measure function
-#-----------------------------------------------------------------
-
-def measureDistance():
-    filename = "distances_%dHuizen_%d.txt" % (total_Houses, randint(0,10000000)) #tijdelijk
-    f = open(filename, 'w')
-    for a in houselist:
-        for b in houselist:
-            #check so it's not measuring distance to itself.
-            if b != a:
-                distance = "%s > %s:  x%d, y%d\n" % (a.name, b.name, a.rect.left - b.rect.left, a.rect.top - b.rect.top)
-                f.write(distance)
-
 def houseposition():
     for a in houselist:
         afstanden = []
@@ -209,52 +183,64 @@ def positionHelper(a, b, afstanden):
 
     if b.rect.bottom - a.rect.top < 0: #above
 
-        if b.rect.left - a.rect.right > 0: # topright
+        if b.rect.left - a.rect.right > 0:
             afstand = (((b.rect.left - a.rect.right)**2 + (b.rect.bottom - a.rect.top)**2) **(1.0/2))/4
-            print afstand
             afstanden.append(afstand)
             return 'topright'
-        elif a.rect.left - b.rect.right > 0: # topleft
+        elif a.rect.left - b.rect.right > 0:
             afstand = (((a.rect.left - b.rect.right)**2 + (b.rect.bottom - a.rect.top)**2) **(1.0/2))/4
-            print afstand
             afstanden.append(afstand)
             return 'topleft'
-        else: #top
-            afstand = fabs((a.rect.bottom - b.rect.top)/4) 
-            print afstand
+        else:
+            afstand = fabs((a.rect.bottom - b.rect.top)/4)
             afstanden.append(afstand)
             return 'top'
 
     elif a.rect.bottom - b.rect.top < 0: #below
 
-        if b.rect.left - a.rect.right > 0: #bottomright
+        if b.rect.left - a.rect.right > 0:
             afstand = (((b.rect.left - a.rect.right)**2 + (a.rect.bottom -b.rect.top)**2) **(1.0/2))/4
-            print afstand
             afstanden.append(afstand)
             return 'bottomright'
-        elif a.rect.left - b.rect.right > 0: #bottomleft
+        elif a.rect.left - b.rect.right > 0:
             afstand = (((a.rect.left - b.rect.right)**2 + (a.rect.bottom -b.rect.top)**2) **(1.0/2))/4
-            print afstand
             afstanden.append(afstand)
             return 'bottomleft'
-        else: #bottom
+        else:
             afstand = fabs((b.rect.bottom - a.rect.top)/4)
-            print afstand
             afstanden.append(afstand)
             return 'bottom'
 
     elif a.rect.left - b.rect.right > 0: #left
         afstand = fabs((a.rect.left - b.rect.right)/4)
-        print afstand
         afstanden.append(afstand)
         return 'left'
+
     elif b.rect.left - a.rect.right > 0: #right
         afstand = fabs((b.rect.left - a.rect.right)/4)
-        print afstand
         afstanden.append(afstand)
         return 'right'
+                
+                  
 
+def measureValue():
+    prices = []
+    for house in houselist:
+        for huis in range(total_Maisons):
+            if house == maison:
+                price = float(house.waarde + (((vrijstand - house.verplichte_vrijstand)/4) * (house.waarde * 0.06)))
+                prices.append(price)
+        for huis in range(total_Bungalows):
+            if house == bungalow:
+                price = float(house.waarde + (((vrijstand - house.verplichte_vrijstand)/4) * (house.waarde * 0.04)))
+                prices.append(price)
+        for huis in range(total_Eensgezins):
+            if house == eengezins:
+                price = float(house.waarde + (((vrijstand - house.verplichte_vrijstand)/4) * (house.waarde * 0.03)))
+                prices.append(price)
 
+    Total_Value = sum(prices)
+    print "Totale waarde van wijk is: " + str(Total_Value)
 
 #------------------------------------------------------------------
 # Main program loop                                                                                                   
@@ -314,14 +300,19 @@ while True:
 
                     pygame.display.update()
 
-                #even tijdelijke test om de huisjes rond te bewegen. 
                 if event.key == K_o: #move all houses one place to the left.
                     screen.fill(BLACK)
-                    house.rect.x += 10
-                    house.rect_vr.x += 10
+                    for house in houselist:
+                        house.rect.x += 10
+                        house.rect_vr.x += 10
                     for house in houselist:
                         house.render()
                     pygame.display.update()
+
                 if event.key == K_m:
                     houseposition()
 
+                if event.key == K_w:
+                    measureValue()
+
+ 
