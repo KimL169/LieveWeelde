@@ -1,5 +1,6 @@
 import pygame, sys, csv
 from math import e, pi, cos, sin, sqrt, fabs
+import math
 from random import randint
 from pygame.locals import *
 import datetime, time
@@ -20,7 +21,7 @@ afstanden = []
 vrijstand = []
 
 #define total number of houses
-total_Houses =60
+total_Houses = 60
 
 #define total number of each house type
 total_Maisons = int(total_Houses * 0.15) 
@@ -46,7 +47,31 @@ YELLOW = (250, 250, 210)
 #--------------------------------
 # Classes voor de huisjes
 #----------------------------
-
+''''
+class Environment:
+    """ Defines the boundary of a simulation and its properties """
+    
+    def __init__(self, (width, height)):
+        self.width = WIDTH
+        self.height = HEIGHT
+        self.houselist = []
+        
+        self.colour = (255,255,255)
+        self.mass_of_air = 0.2
+        self.elasticity = 0.75
+        self.acceleration = (0,0)
+        
+        self.particle_functions1 = []
+        self.particle_functions2 = []
+        self.function_dict = {
+        'move': (1, lambda p: p.move()),
+        'drag': (1, lambda p: p.experienceDrag()),
+        'bounce': (1, lambda p: self.bounce(p)),
+        'accelerate': (1, lambda p: p.accelerate(self.acceleration)),
+        'collide': (2, lambda p1, p2: collide(p1, p2)),
+        'combine': (2, lambda p1, p2: combine(p1, p2)),
+        'attract': (2, lambda p1, p2: p1.attract(p2))}
+'''
 class Maison():
 
     def __init__ (self):
@@ -64,7 +89,13 @@ class Maison():
         self.kleur = BLUE
         self.kleur_vrijstand = YELLOW
         self.waarde = 610000
-        
+        self.speed = 2
+        self.angle = 1
+
+    def move(self):
+        """ Update position based on speed, angle"""
+        self.rect.x += 1
+        self.rect_vr.y += 1
 
     def render(self):
         pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
@@ -94,8 +125,13 @@ class Bungalow():
         self.kleur = RED
         self.kleur_vrijstand = YELLOW
         self.waarde = 399000
+        self.speed = 2
+        self.angle = 1
 
-        
+    def move(self):
+        """ Update position based on speed, angle"""
+        self.rect.x += 1
+        self.rect_vr.y += 1
 
     def render(self):
         pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
@@ -125,7 +161,13 @@ class Eengezins():
         self.kleur = GREEN
         self.kleur_vrijstand = YELLOW
         self.waarde = 285000
-        
+        self.speed = 2
+        self.angle = 1
+
+    def move(self):
+        """ Update position based on speed, angle"""
+        self.rect.x += 1
+        self.rect_vr.y += 1
 
     def render(self):
         pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
@@ -176,14 +218,14 @@ def houseposition():
         afstanden = []
         for b in houselist:
             if b != a:
-               positionHelper(a, b, afstanden)
+               position = positionHelper(a, b, afstanden)
         vrijstand.append(min(afstanden))
     counter = 0
-    
+    """
     for house in houselist:
         print "%s: %.3f" % (house.name, vrijstand[counter])
         counter += 1
-
+    """
 def positionHelper(a, b, afstanden):
 
     if b.rect.bottom - a.rect.top < 0: #above
@@ -303,8 +345,7 @@ while True:
                             counter_e += 1
                             naam = "%de" % (counter_e)
                             eengezins.name(naam)
-                            houselist.append(eengezins)
-                    
+                            houselist.append(eengezins)                    
 
                     for house in houselist:
                         house.render()
@@ -316,13 +357,14 @@ while True:
                     pygame.display.update()
 
                 if event.key == K_o: #move all houses one place to the left.
-                    screen.fill(BLACK)
+                
                     for house in houselist:
-                        house.rect.x += 10
-                        house.rect_vr.x += 10
-                    for house in houselist:
+                        screen.fill(BLACK)
+                        house.move()
                         house.render()
-                    pygame.display.update()
+                        houseposition()
+                        Total_Value = measureValue()
+
                     
                 if event.key == K_r:
                     init() 
