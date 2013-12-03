@@ -20,7 +20,7 @@ afstanden = []
 vrijstand = []
 
 #define total number of houses
-total_Houses = 40
+total_Houses =60
 
 #define total number of each house type
 total_Maisons = int(total_Houses * 0.15) 
@@ -141,7 +141,6 @@ class Eengezins():
 
 # Collision Detect functies
 #------------------------------------------------------------------
-
 def screenCapture():
     
     imagename = "screen_%sh_w%d.jpg" %(total_Houses, Total_Value)
@@ -150,10 +149,10 @@ def screenCapture():
 def doHousesOverlap(rect1, rect2):
     for a, b in [(rect1, rect2), (rect2, rect1)]:
         # Check if a's corners are inside b
-        if ((isPointInsideRect(a.rect_vr.left, a.rect_vr.top, b)) or
-            (isPointInsideRect(a.rect_vr.left, a.rect_vr.bottom, b)) or
-            (isPointInsideRect(a.rect_vr.right, a.rect_vr.top, b)) or
-            (isPointInsideRect(a.rect_vr.right, a.rect_vr.bottom, b))):
+        if ((isPointInsideRect(a.rect.left, a.rect.top, b)) or
+            (isPointInsideRect(a.rect.left, a.rect.bottom, b)) or
+            (isPointInsideRect(a.rect.right, a.rect.top, b)) or
+            (isPointInsideRect(a.rect.right, a.rect.bottom, b))):
             return True
     return False
 
@@ -235,23 +234,24 @@ def measureValue():
     for house in houselist:
         for huis in range(total_Maisons):
             if house == maison:
-                price = float(house.waarde + (((vrijstand[counter] - house.verplichte_vrijstand)/4) * (house.waarde * 0.06)))
+                price = float(house.waarde + ((vrijstand[counter] - (house.verplichte_vrijstand/4)) * (house.waarde * 0.06)))
                 counter += 1
                 prices.append(price)
         for huis in range(total_Bungalows):
             if house == bungalow:
-                price = float(house.waarde + (((vrijstand[counter] - house.verplichte_vrijstand)/4) * (house.waarde * 0.04)))
+                price = float(house.waarde + ((vrijstand[counter] - (house.verplichte_vrijstand/4)) * (house.waarde * 0.04)))
                 counter += 1
                 prices.append(price)
         for huis in range(total_Eensgezins):
             if house == eengezins:
-                price = float(house.waarde + (((vrijstand[counter] - house.verplichte_vrijstand)/4) * (house.waarde * 0.03)))
+                price = float(house.waarde + ((vrijstand[counter] - (house.verplichte_vrijstand/4)) * (house.waarde * 0.03)))
                 counter += 1
                 prices.append(price)
 
-    Total_Value = sum(prices)
-    print "Totale waarde van wijk is: " + str(Total_Value)
+    Total_Value = sum(prices) 
+    print "Totale waarde van wijk is: " "%.2f" % + float(Total_Value)
     return Total_Value
+
 #------------------------------------------------------------------
 # Main program loop                                                                                                   
 #------------------------------------------------------------------
@@ -267,14 +267,14 @@ while True:
             if event.type == KEYDOWN:
                 if event.key == K_q: # return to main
                     pygame.quit()
-                    sys.exit()     
+                    sys.exit()  
                 
                 counter_m = 0
                 counter_b = 0
                 counter_e = 0
                 if event.key == K_g: # place houses on screen
 
-                    while countegit r_m < total_Maisons:
+                    while counter_m < total_Maisons:
 
                         maison = Maison() 
 
@@ -309,7 +309,6 @@ while True:
                     for house in houselist:
                         house.render()
 
-                    #bepaal vrijstand, print screen capture en totale waarde
                     houseposition()
                     Total_Value = measureValue()
                     screenCapture()
@@ -324,6 +323,9 @@ while True:
                     for house in houselist:
                         house.render()
                     pygame.display.update()
+                    
                 if event.key == K_r:
                     init() 
+
+
  
