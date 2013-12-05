@@ -24,7 +24,7 @@ vrijstand = []
 highest_value = 0
 
 #define total number of houses
-total_Houses = 40
+total_Houses = 20
 
 #define total number of each house type
 total_Maisons = int(total_Houses * 0.15) 
@@ -65,11 +65,10 @@ class Maison():
         self.y_vr = self.y - self.verplichte_vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)  # huis als Rect zodat we de pygame rect library functions kunnen gebruiken
         self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
-        self.rect_extra = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
+        self.rect_extra = pygame.Rect(self.x_vr-15, self.y_vr-15, self.w_vr+30, self.h_vr+30)
         self.kleur = BLUE
         self.kleur_vrijstand = YELLOW
         self.waarde = 610000
-        self.vrijstand = 0
 
     def render(self):
         pygame.draw.rect(screen, WHITE, (self.rect_extra))
@@ -97,11 +96,10 @@ class Bungalow():
         self.y_vr = self.y - self.verplichte_vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)
         self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
-        self.rect_extra = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
+        self.rect_extra = pygame.Rect(self.x_vr-10, self.y_vr-10, self.w_vr+20, self.h_vr+20)
         self.kleur = RED
         self.kleur_vrijstand = YELLOW
         self.waarde = 399000
-        self.vrijstand = 0
 
     def render(self):
         pygame.draw.rect(screen, WHITE, (self.rect_extra))
@@ -129,11 +127,10 @@ class Eengezins():
         self.y_vr = self.y - self.verplichte_vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)
         self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
-        self.rect_extra = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
+        self.rect_extra = pygame.Rect(self.x_vr-5, self.y_vr-5, self.w_vr+10, self.h_vr+10)
         self.kleur = GREEN
         self.kleur_vrijstand = YELLOW
         self.waarde = 285000
-        self.vrijstand = 0
 
     def render(self):
         pygame.draw.rect(screen, WHITE, (self.rect_extra))
@@ -237,9 +234,7 @@ def positionHelper(a, b, afstanden):
         afstand = fabs((b.rect.left - a.rect.right)/4)
         afstanden.append(afstand)
         return 'right'
-
-    #om handmatig zo efficient mogelijk de vrijstand te verdelen.
-
+                
                   
 
 def measureValue():
@@ -283,7 +278,7 @@ while True:
                 if event.key == K_g: # place houses on screen
             
                     #Loop om hem te laten herhalen.
-                    for a in range(100):
+                    while True:
                         counter_m = 0
                         counter_b = 0
                         counter_e = 0
@@ -329,7 +324,6 @@ while True:
 
                         houseposition(houselist, vrijstand)
                         total_value = measureValue()
-                        
 
                         '''
                         #maak screencapture als total_value de hoogste waarde tot nu toe is.
