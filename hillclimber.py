@@ -336,23 +336,25 @@ while True:
                     while True:
 
                         screen.fill(BLACK)
-                        huislijst = []
 
+                        #we gebruiken alleen deze list, eerst removen we het huisje uit de list en daarna appenden we hem weer.
+                        # anders werkt de overlap check namelijk niet. We kunnen niet twee aparte lists gebruiken.
                         for house in houselist:
+                            houselist.remove(house)
                             random_x = getRandInt()
                             random_y = getRandInt()
                             move(house, random_x, random_y)
 
-                            if overlapCheck(house, huislijst) == True:
+                            if overlapCheck(house, houselist) == True:
                                 moveback(house, random_x, random_y)
 
-                            huislijst.append(house)
+                            houselist.append(house)
                         
-                        for huis in huislijst:
-                            huis.render()
+                        for house in houselist:
+                            house.render()
 
-                        houseposition(huislijst)
-                        Total_Value = measureValue(huislijst)
+                        houseposition(houselist)
+                        Total_Value = measureValue(houselist)
                         pygame.display.update()
 
                 
