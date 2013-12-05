@@ -270,6 +270,14 @@ def moveback(house, random_x, random_y):
     house.rect_vr.x -= random_x
     house.rect_vr.y -= random_y
 
+def bounce(house):
+
+    if house.rect_vr.x >= WIDTH - house.w_vr or house.rect_vr.x <= house.verplichte_vrijstand:
+        return True
+    if house.rect_vr.y >= HEIGHT - house.h_vr or house.rect_vr.y <= house.verplichte_vrijstand:
+        return True 
+    else:
+        return False
 
 while True:
 
@@ -346,6 +354,8 @@ while True:
                             move(house, random_x, random_y)
 
                             if overlapCheck(house, houselist) == True:
+                                moveback(house, random_x, random_y)
+                            elif bounce(house) == True:
                                 moveback(house, random_x, random_y)
 
                             houselist.append(house)
