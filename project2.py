@@ -76,8 +76,8 @@ class Maison():
         pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
         pygame.draw.rect(screen, self.kleur, (self.rect))
         myfont = pygame.font.SysFont("monospace", 15)
-        label = myfont.render(house.name, 1, (RED))
-        screen.blit(label, (self.x_vr, self.y_vr))
+        self.label = myfont.render(house.name, 1, (RED))
+        screen.blit(self.label, (self.x, self.y))
 
     def name(self, name):
         self.name = name
@@ -111,8 +111,8 @@ class Bungalow():
         pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
         pygame.draw.rect(screen, self.kleur, (self.rect))
         myfont = pygame.font.SysFont("monospace", 15)
-        label = myfont.render(house.name, 1, (BLUE))
-        screen.blit(label, (self.x_vr, self.y_vr))
+        self.label = myfont.render(house.name, 1, (BLUE))
+        screen.blit(self.label, (self.x, self.y))
 
     def name(self, name):
         self.name = name
@@ -146,8 +146,8 @@ class Eengezins():
         pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
         pygame.draw.rect(screen, self.kleur, (self.rect))
         myfont = pygame.font.SysFont("monospace", 15)
-        label = myfont.render(house.name, 1, (RED))
-        screen.blit(label, (self.x_vr, self.y_vr))
+        self.label = myfont.render(house.name, 1, (RED))
+        screen.blit(self.label, (self.x, self.y))
 
 
     def name(self, name):
@@ -267,10 +267,12 @@ def move(house, random_x, random_y):
     house.rect_vr.y += random_y
     house.rect_extra.x += random_x
     house.rect_extra.y += random_y
+    house.x += random_x
+    house.y += random_y
     return house
 
 def getRandInt():
-    return random.randint(-5,5)
+    return random.randint(-1,1)
 
 def moveback(house, random_x, random_y):
     house.rect.x -= random_x
@@ -279,6 +281,8 @@ def moveback(house, random_x, random_y):
     house.rect_vr.y -= random_y
     house.rect_extra.x -= random_x
     house.rect_extra.y -= random_y
+    house.x -= random_x
+    house.y -= random_y
     return house
 
 def bounce(house):
@@ -408,6 +412,7 @@ while True:
                             screen.fill(BLACK)
                             for house in houselist:
                                 house.render()
+                                screen.blit(house.label, (house.x, house.y))
                             print "Totale waarde van wijk is: " "%.2f" % + float(Total_Value)
 
 
