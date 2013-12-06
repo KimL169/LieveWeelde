@@ -20,7 +20,10 @@ afstanden = []
 vrijstand = []
 
 #define total number of houses
-total_Houses =20
+total_Houses = 20
+
+#global for total value
+Total_Value = 0
 
 #define total number of each house type
 total_Maisons = int(total_Houses * 0.15) 
@@ -232,25 +235,21 @@ def measureValue(houselist):
     prices = []
     counter = 0
     for house in houselist:
-        for huis in range(total_Maisons):
-            if house == maison:
-                price = float(house.waarde + ((vrijstand[counter] - (house.verplichte_vrijstand/4)) * (house.waarde * 0.06)))
-                counter += 1
-                prices.append(price)
-        for huis in range(total_Bungalows):
-            if house == bungalow:
-                price = float(house.waarde + ((vrijstand[counter] - (house.verplichte_vrijstand/4)) * (house.waarde * 0.04)))
-                counter += 1
-                prices.append(price)
-        for huis in range(total_Eensgezins):
-            if house == eengezins:
-                price = float(house.waarde + ((vrijstand[counter] - (house.verplichte_vrijstand/4)) * (house.waarde * 0.03)))
-                counter += 1
-                prices.append(price)
+        if house == maison:
+            price = float(house.waarde + ((vrijstand[counter] - (house.verplichte_vrijstand/4)) * (house.waarde * 0.06)))
+            counter += 1
+            prices.append(price)
+        if house == bungalow:
+            price = float(house.waarde + ((vrijstand[counter] - (house.verplichte_vrijstand/4)) * (house.waarde * 0.04)))
+            counter += 1
+            prices.append(price)
+        if house == eengezins:
+            price = float(house.waarde + ((vrijstand[counter] - (house.verplichte_vrijstand/4)) * (house.waarde * 0.03)))
+            counter += 1
+            prices.append(price)
 
-    Total_Value = sum(prices) 
-    print "Totale waarde van wijk is: " "%.2f" % + float(Total_Value)
-    return Total_Value
+    totalValue = sum(prices) 
+    return totalValue
 
 #------------------------------------------------------------------
 # Main program loop                                                                                                   
@@ -260,6 +259,7 @@ def move(house, random_x, random_y):
     house.rect.y += random_y
     house.rect_vr.x += random_x
     house.rect_vr.y += random_y
+    return house
 
 def getRandInt():
     return random.randint(-4,4)
@@ -269,6 +269,7 @@ def moveback(house, random_x, random_y):
     house.rect.y -= random_y
     house.rect_vr.x -= random_x
     house.rect_vr.y -= random_y
+    return house
 
 def bounce(house):
 
@@ -278,6 +279,26 @@ def bounce(house):
         return True 
     else:
         return False
+
+
+def moveHouses(houselist):
+
+    for house in houselist:
+
+        houselist.remove(house)
+        random_x = getRandInt()
+        random_y = getRandInt()
+        move(house, random_x, random_y)
+
+        if overlapCheck(house, houselist) == True:
+            moveback(house, random_x, random_y)
+        if bounce(house) == True:
+            moveback(house, random_x, random_y)
+
+        houselist.append(house)
+
+    return houselist
+
 
 while True:
 
@@ -342,29 +363,30 @@ while True:
                 if event.key == K_o: #move all houses random 0.25, 0.5, 0.75 or 1 meter (to the left, right, top or bottom)
 
                     while True:
+                        oldValue = Total_Value
+                        oldHouselist = []
+                        for house in houselist:
+                            oldHouselist.append(house)
+                       
+
+                        moveHouses(houselist)
+                        houseposition(houselist)
+                        newValue = measureValue(houselist)
+
+                        if newValue < oldValue:
+                            houselist = oldHouselist
+                            Total_Value = oldValue                           
+                        else:
+                            Total_Value = newValue
+
+                        if newValue > oldValue:
+                            print "Totale waarde van wijk is: " "%.2f" % + float(newValue)
 
                         screen.fill(BLACK)
-
-                        #we gebruiken alleen deze list, eerst removen we het huisje uit de list en daarna appenden we hem weer.
-                        # anders werkt de overlap check namelijk niet. We kunnen niet twee aparte lists gebruiken.
-                        for house in houselist:
-                            houselist.remove(house)
-                            random_x = getRandInt()
-                            random_y = getRandInt()
-                            move(house, random_x, random_y)
-
-                            if overlapCheck(house, houselist) == True:
-                                moveback(house, random_x, random_y)
-                            elif bounce(house) == True:
-                                moveback(house, random_x, random_y)
-
-                            houselist.append(house)
-                        
                         for house in houselist:
                             house.render()
 
-                        houseposition(houselist)
-                        Total_Value = measureValue(houselist)
+
                         pygame.display.update()
 
                 
