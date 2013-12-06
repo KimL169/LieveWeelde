@@ -65,7 +65,7 @@ class Maison():
         self.y_vr = self.y - self.verplichte_vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)  # huis als Rect zodat we de pygame rect library functions kunnen gebruiken
         self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
-        self.rect_extra = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
+        self.rect_extra = pygame.Rect(self.x_vr-10, self.y_vr-10, self.w_vr+20, self.h_vr+20)
         self.kleur = BLUE
         self.kleur_vrijstand = YELLOW
         self.waarde = 610000
@@ -100,7 +100,7 @@ class Bungalow():
         self.y_vr = self.y - self.verplichte_vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)
         self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
-        self.rect_extra = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
+        self.rect_extra = pygame.Rect(self.x_vr-10, self.y_vr-10, self.w_vr+20, self.h_vr+20)
         self.kleur = RED
         self.kleur_vrijstand = YELLOW
         self.waarde = 399000
@@ -135,7 +135,7 @@ class Eengezins():
         self.y_vr = self.y - self.verplichte_vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)
         self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
-        self.rect_extra = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
+        self.rect_extra = pygame.Rect(self.x_vr-10, self.y_vr-10, self.w_vr+20, self.h_vr+20)
         self.kleur = GREEN
         self.kleur_vrijstand = YELLOW
         self.waarde = 285000
@@ -178,7 +178,7 @@ def doHousesOverlap(rect1, rect2):
     return False
 
 def isPointInsideRect(x, y, huis):
-    if (x >= huis.rect_vr.left) and (x <= huis.rect_vr.right) and (y >= huis.rect_vr.top) and (y <= huis.rect_vr.bottom):
+    if (x >= huis.rect_extra.left) and (x <= huis.rect_extra.right) and (y >= huis.rect_extra.top) and (y <= huis.rect_vr.bottom):
         return True
     else:
         return False
