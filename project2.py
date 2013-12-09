@@ -272,7 +272,7 @@ def move(house, random_x, random_y):
     return house
 
 def getRandInt():
-    return random.randint(-1,1)
+    return random.randint(-2,2)
 
 def moveback(house, random_x, random_y):
     house.rect.x -= random_x
