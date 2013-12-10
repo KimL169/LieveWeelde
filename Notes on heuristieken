@@ -1,0 +1,19 @@
+
+60 huizenvariant:
+
+als eengezins:
+- als nearest other home is eengezins woning = schuif die juist in elkaar.
+- als nearest other home is maison > verplaats ervan weg
+- else random
+
+als maison:
+- schuif zo ver mogelijk naar vrijstand.
+
+als bungalow:
+- schuif naar vrijstand. 
+
+>>>>pas formule toe van waardeverbetering!!!
+
+
+
+
