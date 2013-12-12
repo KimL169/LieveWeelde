@@ -1,4 +1,4 @@
-import pygame, sys, csv, random
+import pygame, sys, csv, random, re, cStringIO, codecs
 from math import e, pi, cos, sin, sqrt, fabs
 import math
 from random import randint
@@ -6,6 +6,7 @@ from pygame.locals import *
 import datetime, time
 
 pygame.init()
+ 
 
 #------------------------------------------------------------------
 # Variabelen en scherminstellingen
@@ -20,16 +21,13 @@ afstanden = []
 # lijst met vrijstand voor elk huis
 vrijstand = []
 
-x_list = []
-y_list = []
-
 # variable voor de hoogste waarde tot nu toe.
 Total_Value = 0
 
 #define total number of houses
 total_Houses = 20
 
-NewValue = 0
+#geef hier aan hoeveel mislukte bewegingen de hilclimber mag proberen voor hij eindigd.
 
 #define total number of each house type
 total_Maisons = int(total_Houses * 0.15) 
@@ -37,8 +35,8 @@ total_Bungalows = int(total_Houses * 0.25)
 total_Eensgezins = int(total_Houses * 0.60)
 
 #display settings
-WIDTH = 640
-HEIGHT = 480
+WIDTH = 16000
+HEIGHT = 12000
 SCREEN_SIZE = (WIDTH, HEIGHT)
 screen = pygame.display.set_mode(SCREEN_SIZE)
 
@@ -59,25 +57,24 @@ YELLOW = (250, 250, 170)
 class Maison():
 
     def __init__ (self):
-        self.verplichte_vrijstand = 24
-        self.w = 44
-        self.h = 42
-        self.w_vr = 92
-        self.h_vr = 90
+        self.verplichte_vrijstand = 600
+        self.w = 1100
+        self.h = 1050
+        self.w_vr = 2300
+        self.h_vr = 2250
         self.x = randint(self.verplichte_vrijstand, WIDTH-self.w_vr)
         self.y = randint(self.verplichte_vrijstand, HEIGHT-self.h_vr)
         self.x_vr = self.x - self.verplichte_vrijstand
         self.y_vr = self.y - self.verplichte_vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)  # huis als Rect zodat we de pygame rect library functions kunnen gebruiken
         self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
-        self.rect_extra = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
+        self.rect_extra = pygame.Rect(self.x_vr-500, self.y_vr-500, self.w_vr+1000, self.h_vr+1000)
         self.kleur = BLUE
         self.kleur_vrijstand = YELLOW
         self.waarde = 610000
         self.vrijstand = 0
 
     def render(self):
-        pygame.draw.rect(screen, WHITE, (self.rect_extra))
         pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
         pygame.draw.rect(screen, self.kleur, (self.rect))
         myfont = pygame.font.SysFont("monospace", 15)
@@ -88,31 +85,30 @@ class Maison():
         self.name = name
         
     def price(self):
-        price = float(self.waarde + ((self.vrijstand - (self.verplichte_vrijstand/4)) * (self.waarde * 0.06)))
+        price = float(self.waarde + ((self.vrijstand - self.verplichte_vrijstand) * (self.waarde * 0.06)))
         return price
 
 class Bungalow():
 
     def __init__ (self):
-        self.verplichte_vrijstand = 12
-        self.w = 40
-        self.h = 30
-        self.w_vr = 64
-        self.h_vr = 54
+        self.verplichte_vrijstand = 300
+        self.w = 1000
+        self.h = 750
+        self.w_vr = 1600
+        self.h_vr = 1350
         self.x = randint(self.verplichte_vrijstand, WIDTH-self.w_vr)
         self.y = randint(self.verplichte_vrijstand, HEIGHT-self.h_vr)
         self.x_vr = self.x - self.verplichte_vrijstand
         self.y_vr = self.y - self.verplichte_vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)
         self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
-        self.rect_extra = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
+        self.rect_extra = pygame.Rect(self.x_vr-375, self.y_vr-375, self.w_vr+7500, self.h_vr+7500)
         self.kleur = RED
         self.kleur_vrijstand = YELLOW
         self.waarde = 399000
         self.vrijstand = 0
 
     def render(self):
-        pygame.draw.rect(screen, WHITE, (self.rect_extra))
         pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
         pygame.draw.rect(screen, self.kleur, (self.rect))
         myfont = pygame.font.SysFont("monospace", 15)
@@ -123,31 +119,30 @@ class Bungalow():
         self.name = name
 
     def price(self):
-        price = float(self.waarde + ((self.vrijstand - (self.verplichte_vrijstand/4)) * (self.waarde * 0.04)))
+        price = float(self.waarde + ((self.vrijstand - self.verplichte_vrijstand) * (self.waarde * 0.04)))
         return price
 
 class Eengezins():
 
     def __init__ (self):
-        self.verplichte_vrijstand = 8
-        self.w = 32
-        self.h = 32
-        self.w_vr = 48
-        self.h_vr = 48
+        self.verplichte_vrijstand = 200
+        self.w = 800
+        self.h = 800
+        self.w_vr = 1200
+        self.h_vr = 1200
         self.x = randint(self.verplichte_vrijstand, WIDTH-self.w_vr)
         self.y = randint(self.verplichte_vrijstand, HEIGHT-self.h_vr)
         self.x_vr = self.x - self.verplichte_vrijstand
         self.y_vr = self.y - self.verplichte_vrijstand
         self.rect =  pygame.Rect(self.x, self.y, self.w, self.h)
         self.rect_vr = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
-        self.rect_extra = pygame.Rect(self.x_vr, self.y_vr, self.w_vr, self.h_vr)
+        self.rect_extra = pygame.Rect(self.x_vr-250, self.y_vr-250, self.w_vr+500, self.h_vr+500)
         self.kleur = GREEN
         self.kleur_vrijstand = YELLOW
         self.waarde = 285000
         self.vrijstand = 0
 
     def render(self):
-        pygame.draw.rect(screen, WHITE, (self.rect_extra))
         pygame.draw.rect(screen, self.kleur_vrijstand, (self.rect_vr))
         pygame.draw.rect(screen, self.kleur, (self.rect))
         myfont = pygame.font.SysFont("monospace", 15)
@@ -159,22 +154,14 @@ class Eengezins():
         self.name = name
 
     def price(self):
-        price = float(self.waarde + ((self.vrijstand - (self.verplichte_vrijstand/4)) * (self.waarde * 0.03)))
+        price = float(self.waarde + ((self.vrijstand - self.verplichte_vrijstand) * (self.waarde * 0.03)))
         return price
-
-class Position ():
-
-    def __init__(self):
-        self.afstand = 0
-        self.position = ' '
-        self.x = 0
-        self.y = 0
 
 # Collision Detect functies
 #------------------------------------------------------------------
 def screenCapture():
     
-    imagename = "py3_%sh_w%d.jpg" %(total_Houses, Total_Value)
+    imagename = "Hillclimber_%sh_w%d_r%d.jpg" %(total_Houses, Total_Value, ronde)
     pygame.image.save(screen, imagename)
 
 def doHousesOverlap(rect1, rect2):
@@ -205,76 +192,67 @@ def overlapCheck(huisje, houselist):
 def houseposition(houselist):
     for a in houselist:
         afstanden = []
+
+        #muur rechts
+        afstand = (WIDTH - a.rect.right)
+        afstanden.append(afstand)
+        #muur links
+        afstand = (a.rect.left)
+        afstanden.append(afstand)
+        #muur boven
+        afstand = (HEIGHT - a.rect.top)
+        afstanden.append(afstand)
+        #muur onder
+        afstand = (a.rect.bottom)
+        afstanden.append(afstand)
+
         for b in houselist:
             if b != a:
                position = positionHelper(a, b, afstanden)
         a.vrijstand = min(afstanden)
 
-def x_distance(house, houselist):
-    x_list = []
-    for a in houselist:
-        if a != house:
-            x = house.rect.centerx - a.rect.centerx
-            x_list.append(x)
-    x = min(x_list)
-
-    return x
-
-def y_distance(house, houselist):
-    y_list = []
-    for a in houselist:
-        if a != house:
-            y = house.rect.centery - a.rect.centery
-            y_list.append(y)
-    y = min(y_list)
-
-    return y
-
 
 def positionHelper(a, b, afstanden):
-    # alleen als houseposition_2 hem aanroept hoeft hij de x en y list te vullen.
 
     if b.rect.bottom - a.rect.top < 0: #above
 
         if b.rect.left - a.rect.right > 0:
-            afstand = (((b.rect.left - a.rect.right)**2 + (b.rect.bottom - a.rect.top)**2) **(1.0/2))/4
+            afstand = (((b.rect.left - a.rect.right)**2 + (b.rect.bottom - a.rect.top)**2) **(1.0/2))
             afstanden.append(afstand)
             return 'topright'
         elif a.rect.left - b.rect.right > 0:
-            afstand = (((a.rect.left - b.rect.right)**2 + (b.rect.bottom - a.rect.top)**2) **(1.0/2))/4
+            afstand = (((a.rect.left - b.rect.right)**2 + (b.rect.bottom - a.rect.top)**2) **(1.0/2))
             afstanden.append(afstand)
             return 'topleft'
         else:
-            afstand = fabs((a.rect.bottom - b.rect.top)/4)
+            afstand = fabs(a.rect.bottom - b.rect.top)
             afstanden.append(afstand)
             return 'top'
 
     elif a.rect.bottom - b.rect.top < 0: #below
 
         if b.rect.left - a.rect.right > 0:
-            afstand = (((b.rect.left - a.rect.right)**2 + (a.rect.bottom -b.rect.top)**2) **(1.0/2))/4
+            afstand = (((b.rect.left - a.rect.right)**2 + (a.rect.bottom -b.rect.top)**2) **(1.0/2))
             afstanden.append(afstand)
             return 'bottomright'
         elif a.rect.left - b.rect.right > 0:
-            afstand = (((a.rect.left - b.rect.right)**2 + (a.rect.bottom -b.rect.top)**2) **(1.0/2))/4
+            afstand = (((a.rect.left - b.rect.right)**2 + (a.rect.bottom -b.rect.top)**2) **(1.0/2))
             afstanden.append(afstand)
             return 'bottomleft'
         else:
-            afstand = fabs((b.rect.bottom - a.rect.top)/4)
+            afstand = fabs(b.rect.bottom - a.rect.top)
             afstanden.append(afstand)
             return 'bottom'
 
     elif a.rect.left - b.rect.right > 0: #left
-        afstand = fabs((a.rect.left - b.rect.right)/4)
+        afstand = fabs(a.rect.left - b.rect.right)
         afstanden.append(afstand)
         return 'left'
 
     elif b.rect.left - a.rect.right > 0: #right
-        afstand = fabs((b.rect.left - a.rect.right)/4)
+        afstand = fabs(b.rect.left - a.rect.right)
         afstanden.append(afstand)
         return 'right'
-
-    #om handmatig zo efficient mogelijk de vrijstand te verdelen.
 
                   
 
@@ -286,43 +264,36 @@ def measureValue(houselist):
 
         prices.append(price)
 
-    total_value = sum(prices) 
+    total_value = round(sum(prices),2) 
     return total_value
 
 #------------------------------------------------------------------
 # Main program loop                                                                                                   
 #------------------------------------------------------------------
+def move(house, random_x, random_y):
+    house.rect.x += random_x
+    house.rect.y += random_y
+    house.rect_vr.x += random_x
+    house.rect_vr.y += random_y
+    house.rect_extra.x += random_x
+    house.rect_extra.y += random_y
+    house.x += random_x
+    house.y += random_y
+    return house
 
 def getRandInt():
     return random.randint(-1,1)
 
-def move(house, x, y):
-
-    if x > 0 or x < 0:
-        house.rect.x += x
-        house.rect_vr.x += x
-        house.rect_extra.x += x
-        house.x += x
-    if y > 0 or y < 0:
-        house.rect.y += y
-        house.rect_vr.y += y
-        house.rect_extra.y += y
-        house.y += y
+def moveback(house, random_x, random_y):
+    house.rect.x -= random_x
+    house.rect.y -= random_y
+    house.rect_vr.x -= random_x
+    house.rect_vr.y -= random_y
+    house.rect_extra.x -= random_x
+    house.rect_extra.y -= random_y
+    house.x -= random_x
+    house.y -= random_y
     return house
-
-def moveback(house, x, y):
-    if x > 0 or x < 0:
-        house.rect.x += x
-        house.rect_vr.x += x
-        house.rect_extra.x += x
-        house.x += x
-    if y > 0 or y < 0:
-        house.rect.y += y
-        house.rect_vr.y += y
-        house.rect_extra.y += y
-        house.y += y
-    return house
-
 
 def bounce(house):
 
@@ -333,110 +304,7 @@ def bounce(house):
     else:
         return False
 
-def check_value_increase(NewValue, Total_Value):
-    if Total_Value < NewValue:
-        Total_Value = NewValue
-        screen.fill(BLACK)
-        for house in houselist:
-            house.render()
-            screen.blit(house.label, (house.x, house.y))
-        print "Totale waarde van wijk is: " "%.2f" % + float(Total_Value)
 
-        return True
-    else:
-        return False
-
-def moveHouses(oldHouselist):
-
-    newHouselist = []
-    for house in oldHouselist:
-        x = getRandInt()
-        y = getRandInt()
-        move(house, x, y)
-
-        if overlapCheck(house, oldHouselist) == True:
-            moveback(house, x, y)
-        if bounce(house) == True:
-            moveback(house, x, y)
-
-        newHouselist.append(house)
-        oldHouselist.remove(house)
-
-    return newHouselist
-
-def randomClimb(houselist):
-  for house in houselist:
-    houselist.remove(house)
-    x = getRandInt()
-    y = getRandInt()
-
-    move(house, x, y)
-
-    if overlapCheck(house, houselist) == True:
-        #random-moveback (functie veranderd)
-        moveback(house, x, y)
-    elif bounce(house) == True:
-        moveback(house, x, y)
-
-    houselist.append(house)
-
-    houseposition(houselist)
-    NewValue = measureValue(houselist)
-
-    if check_value_increase(NewValue, Total_Value) == False:
-        return False
-    else:
-        return True, houselist
-
-def nonRandomClimb(houselist):
-    for house in houselist:
-        houselist.remove(house)
-        #werkt niet!!!! 
-        closest_x = x_distance(house, houselist)
-        closest_y = y_distance(house, houselist)
-
-        #check which is closer, x or y, move one step away
-        if closest_x < closest_y:
-            if closest_x > 0:
-                x = -1
-                y = 0
-            else:
-                x = 1
-                y = 0
-        elif closest_y < closest_x:
-            if closest_y > 0:
-                x = 0
-                y = -1
-            else:
-                x = 0
-                y = 1
-        else:   #if x and y are the same distance
-            cointoss = randint(1,10)
-            if cointoss % 2 == 0:
-                x = 0
-                y = getRandInt()
-            else:
-                x = getRandInt()
-                y = 0
-
-        #move the house
-        move(house, x, y)
-
-        #check overlap and bounce, if True: moveback
-    if overlapCheck(house, houselist) == True:
-        moveback(house, x, y)
-    elif bounce(house) == True:
-        moveback(house, x, y)
-
-    houselist.append(house)
-    houseposition(houselist)
-    NewValue = measureValue(houselist)
-
-    #Check if the new value is higher
-    if check_value_increase(NewValue, Total_Value) == False:
-        return False
-    else:
-        return True, houselist
 
 while True:
 
@@ -450,8 +318,18 @@ while True:
                 if event.key == K_g: # place houses on screen
             
                     #Loop om hem te laten herhalen.
+                    ronde = 1
                     for ronde in range(4):
-                        print (ronde +1)
+                        ronde += 1
+                        print (ronde)
+
+                        # Creating the csv output file for writing into as well as defining the writer
+                        output = open("Hillclimber_%sh_r%d.csv" %(total_Houses, ronde), "wb")
+                        writer = csv.writer(output)
+
+                        # add header row
+                        writer.writerow(["Total_Value"])
+
                         counter_m = 0
                         counter_b = 0
                         counter_e = 0
@@ -493,36 +371,74 @@ while True:
                                 houselist.append(eengezins)
                         
 
-                        for house in houselist:
-                            house.render()
+                        # for house in houselist:
+                        #     house.render()
 
                         houseposition(houselist)
                         Total_Value = measureValue(houselist)
-                        print "Begin waarde van wijk: " "%.2f" % + float(Total_Value)
 
-                        pygame.display.update()
+                        writer.writerow([Total_Value])
+
+                        beginWaarde = Total_Value
+
+                        print "Begin waarde van wijk: " "%.2f" % + float(beginWaarde)
+
+                    
+                        '''
+                        #maak screencapture als total_value de hoogste waarde tot nu toe is.
+                        highest_value = screenCapture(highest_value, total_value)
+                        '''
+                        # pygame.display.update()
                         
-                        timeout = time.time() + 60 * 0.2
+                        timeout = time.time() + 60 * 0.1
 
                         while time.time() < timeout:
 
-                            #bewaar de oude houselist om terug te kunnen bewegen.
+                            #we gebruiken alleen deze list, eerst removen we het huisje uit de list en daarna appenden we hem weer.
+                            # anders werkt de overlap check namelijk niet. We kunnen niet twee aparte lists gebruiken.
                             oldHouselist = []
                             for house in houselist:
                                 oldHouselist.append(house)
 
-                            # probeer eerst niet-willekeurig beweging:
-                            check = nonRandomClimb(houselist)
+                            for house in houselist:
+                                houselist.remove(house)
+                                random_x = getRandInt()
+                                random_y = getRandInt()
+                                move(house, random_x, random_y)
 
-                            if check == False:
-                                #probeer NU PAS een willekeurige move:
-                                check = randomClimb(houselist)
+                                if overlapCheck(house, houselist) == True:
+                                    moveback(house, random_x, random_y)
+                                elif bounce(house) == True:
+                                    moveback(house, random_x, random_y)
 
-                                if check == False:
-                                    houselist = []
-                                    for house in oldHouselist:
-                                        houselist.append(house)
+                                houselist.append(house)
 
+                            houseposition(houselist)
+                            NewValue = measureValue(houselist)
+
+                            if Total_Value < NewValue:
+                                Total_Value = NewValue
+                                writer.writerow([Total_Value])
+                                #screen.fill(BLACK)
+                            
+
+                                # for house in houselist:
+                                #     house.render()
+                                #     screen.blit(house.label, (house.x, house.y))
+                                #print "Totale waarde van wijk is: " "%.2f" % + float(Total_Value)
+
+                            else:
+                                houselist = []
+                                for house in oldHouselist:
+                                    houselist.append(house)
+
+                    
+                        for house in houselist:
+                            house.render()
+                            screen.blit(house.label, (house.x, house.y))
                             pygame.display.update()
-
                         screenCapture()
+
+                    output.close()
+                    pygame.quit()
+                    sys.exit()

@@ -190,6 +190,95 @@ def overlapCheck(huisje, houselist):
 
     return False
 
+def houseposition_2(house, houselist):
+        afstanden = []
+        position = []
+
+        #muur rechts
+        afstand = (WIDTH - (house.rect.right /4))
+        afstanden.append(afstand)
+        position.append('right')
+        #muur links
+        afstand = (house.rect.left /4)
+        afstanden.append(afstand)
+        position.append('left')
+        #muur boven
+        afstand = (HEIGHT - (house.rect.top /4))
+        afstanden.append(afstand)
+        position.append('top')
+        #muur onder
+        afstand = (house.rect.bottom /4)
+        afstanden.append(afstand)
+        position.append('bottom')
+
+        for b in houselist:
+            if b != house:
+               positionHelper_2(house, b, afstanden, position)
+        b.vrijstand = min(afstanden)
+
+        totaal = []
+        counter = 0
+        while counter != len(afstanden):
+
+            combo = []
+            combo.append(afstanden[counter])
+            combo.append(position[counter])
+            totaal.append(combo)
+            counter += 1
+        return totaal
+
+def positionHelper_2(a, b, afstanden, position):
+    if b.rect.bottom - a.rect.top < 0: #above
+
+        if b.rect.left - a.rect.right > 0:
+            afstand = (((b.rect.left - a.rect.right)**2 + (b.rect.bottom - a.rect.top)**2) **(1.0/2))/4
+            afstanden.append(afstand)
+            p = 'topright'
+            position.append(p)
+
+        elif a.rect.left - b.rect.right > 0:
+            afstand = (((a.rect.left - b.rect.right)**2 + (b.rect.bottom - a.rect.top)**2) **(1.0/2))/4
+            afstanden.append(afstand)
+            p = 'topleft'
+            position.append(p)
+        else:
+            afstand = fabs((a.rect.bottom - b.rect.top)/4)
+            afstanden.append(afstand)
+            p = 'top'
+            position.append(p)
+
+    elif a.rect.bottom - b.rect.top < 0: #below
+
+        if b.rect.left - a.rect.right > 0:
+            afstand = (((b.rect.left - a.rect.right)**2 + (a.rect.bottom -b.rect.top)**2) **(1.0/2))/4
+            afstanden.append(afstand)
+            p = 'bottomright'
+            position.append(p) #append nu ook position
+
+        elif a.rect.left - b.rect.right > 0:
+            afstand = (((a.rect.left - b.rect.right)**2 + (a.rect.bottom -b.rect.top)**2) **(1.0/2))/4
+            afstanden.append(afstand)
+            p = 'bottomleft'
+            position.append(p)
+
+        else:
+            afstand = fabs((b.rect.bottom - a.rect.top)/4)
+            afstanden.append(afstand)
+            p = 'bottom'
+            position.append(p)
+
+    elif a.rect.left - b.rect.right > 0: #left
+        afstand = fabs((a.rect.left - b.rect.right)/4)
+        afstanden.append(afstand)
+        p = 'left'
+        position.append(p)
+
+    elif b.rect.left - a.rect.right > 0: #right
+        afstand = fabs((b.rect.left - a.rect.right)/4)
+        afstanden.append(afstand)
+        p = 'right'
+        position.append(p)
+
 def houseposition(houselist):
     for a in houselist:
         afstanden = []
@@ -212,51 +301,42 @@ def houseposition(houselist):
                position = positionHelper(a, b, afstanden)
         a.vrijstand = min(afstanden)
 
-        #betrek hierin nog de afstand tot de randen!!!!!
-
 def positionHelper(a, b, afstanden):
-
     if b.rect.bottom - a.rect.top < 0: #above
 
         if b.rect.left - a.rect.right > 0:
             afstand = (((b.rect.left - a.rect.right)**2 + (b.rect.bottom - a.rect.top)**2) **(1.0/2))/4
             afstanden.append(afstand)
-            return 'topright'
+
         elif a.rect.left - b.rect.right > 0:
             afstand = (((a.rect.left - b.rect.right)**2 + (b.rect.bottom - a.rect.top)**2) **(1.0/2))/4
             afstanden.append(afstand)
-            return 'topleft'
         else:
             afstand = fabs((a.rect.bottom - b.rect.top)/4)
             afstanden.append(afstand)
-            return 'top'
 
     elif a.rect.bottom - b.rect.top < 0: #below
 
         if b.rect.left - a.rect.right > 0:
             afstand = (((b.rect.left - a.rect.right)**2 + (a.rect.bottom -b.rect.top)**2) **(1.0/2))/4
             afstanden.append(afstand)
-            return 'bottomright'
+
         elif a.rect.left - b.rect.right > 0:
             afstand = (((a.rect.left - b.rect.right)**2 + (a.rect.bottom -b.rect.top)**2) **(1.0/2))/4
             afstanden.append(afstand)
-            return 'bottomleft'
+
         else:
             afstand = fabs((b.rect.bottom - a.rect.top)/4)
             afstanden.append(afstand)
-            return 'bottom'
 
     elif a.rect.left - b.rect.right > 0: #left
         afstand = fabs((a.rect.left - b.rect.right)/4)
         afstanden.append(afstand)
-        return 'left'
 
     elif b.rect.left - a.rect.right > 0: #right
         afstand = fabs((b.rect.left - a.rect.right)/4)
         afstanden.append(afstand)
-        return 'right'
-
-                  
+ 
 
 def measureValue(houselist):
     prices = []
@@ -272,29 +352,29 @@ def measureValue(houselist):
 #------------------------------------------------------------------
 # Main program loop                                                                                                   
 #------------------------------------------------------------------
-def move(house, random_x, random_y):
-    house.rect.x += random_x
-    house.rect.y += random_y
-    house.rect_vr.x += random_x
-    house.rect_vr.y += random_y
-    house.rect_extra.x += random_x
-    house.rect_extra.y += random_y
-    house.x += random_x
-    house.y += random_y
+def move(house, x, y):
+    house.rect.x += x
+    house.rect.y += y
+    house.rect_vr.x += x
+    house.rect_vr.y += y
+    house.rect_extra.x += x
+    house.rect_extra.y += y
+    house.x += x
+    house.y += y
     return house
 
 def getRandInt():
     return random.randint(-1,1)
 
-def moveback(house, random_x, random_y):
-    house.rect.x -= random_x
-    house.rect.y -= random_y
-    house.rect_vr.x -= random_x
-    house.rect_vr.y -= random_y
-    house.rect_extra.x -= random_x
-    house.rect_extra.y -= random_y
-    house.x -= random_x
-    house.y -= random_y
+def moveback(house, x, y):
+    house.rect.x -= x
+    house.rect.y -= y
+    house.rect_vr.x -= x
+    house.rect_vr.y -= y
+    house.rect_extra.x -= x
+    house.rect_extra.y -= y
+    house.x -= x
+    house.y -= y
     return house
 
 def bounce(house):
@@ -311,14 +391,14 @@ def moveHouses(oldHouselist):
 
     newHouselist = []
     for house in oldHouselist:
-        random_x = getRandInt()
-        random_y = getRandInt()
-        move(house, random_x, random_y)
+        x = getRandInt()
+        y = getRandInt()
+        move(house, x, y)
 
         if overlapCheck(house, oldHouselist) == True:
-            moveback(house, random_x, random_y)
+            moveback(house, x, y)
         if bounce(house) == True:
-            moveback(house, random_x, random_y)
+            moveback(house, x, y)
 
         newHouselist.append(house)
         oldHouselist.remove(house)
@@ -404,49 +484,136 @@ while True:
                             for house in houselist:
                                 oldHouselist.append(house)
 
+                            ###########################
+                            # Try non-random movement
+                            ###########################
                             for house in houselist:
                                 houselist.remove(house)
-                                random_x = getRandInt()
-                                random_y = getRandInt()
-                                move(house, random_x, random_y)
+                                minimumlijst = []
+                                totaal = houseposition_2(house, houselist)
 
-                                if overlapCheck(house, houselist) == True:
-                                    moveback(house, random_x, random_y)
+                                #kijk per voor alle andere huizen(en muren) welke het dichtsbij liggen per orientatie
+                                #append die
+                                Lleft = []
+                                Lright = []
+                                Lbottom = []
+                                Ltop = []
+
+                                for lijst in totaal:
+                                    if lijst[1] == 'left':
+                                        Lleft.append(lijst[0])
+                                    if lijst[1] == 'right':
+                                        Lright.append(lijst[0])
+                                    if lijst[1] == 'bottom':
+                                        Lbottom.append(lijst[0])
+                                    if lijst[1] == 'top':
+                                        Ltop.append(lijst[0])
+
+                                minLeft = 0
+                                minRight = 0
+                                minTop = 0
+                                minBottom = 0
+
+                                if Lright:
+                                    minRight = min(Lright)
+                                    minimumlijst.append(minRight)
+                                if Lleft:
+                                    minLeft = min(Lleft)
+                                    minimumlijst.append(minLeft)
+                                if Lbottom:
+                                    minBottom = min(Lbottom)
+                                    minimumlijst.append(minBottom)
+                                if Ltop:
+                                    minTop = min(Ltop)
+                                    minimumlijst.append(minTop)
+
+
+                                GrootsteRondom = max(minimumlijst)
+                                if GrootsteRondom == minLeft:
+                                    #move left
+                                    x = -1
+                                    y = 0
+                                if GrootsteRondom == minRight:
+                                    #move right
+                                    x = 1
+                                    y = 0
+                                if GrootsteRondom == minTop:
+                                    #move top
+                                    x = 0
+                                    y = 1
+                                if GrootsteRondom == minBottom:
+                                    #move bottom
+                                    x = 0
+                                    y = -1
+
+                                move(house, x, y) #move house
+
+                                if overlapCheck(house, houselist) == True:  #check if good move.
+                                    moveback(house, x, y)
                                 elif bounce(house) == True:
-                                    moveback(house, random_x, random_y)
+                                    moveback(house, x, y)
 
                                 houselist.append(house)
-
                         
                             
-                            houseposition(houselist)
-                            NewValue = measureValue(houselist)
+                                houseposition(houselist)
+                                NewValue = measureValue(houselist)
 
-                            if Total_Value < NewValue:
-                                Total_Value = NewValue
-                                screen.fill(BLACK)
-                            
-                                for house in houselist:
-                                    house.render()
-                                    screen.blit(house.label, (house.x, house.y))
-                            
-                                print "Totale waarde van wijk is: %.2f" % (Total_Value)
+                                if Total_Value < NewValue:
+                                    Total_Value = NewValue
+                                    screen.fill(BLACK)
+                                
+                                    for house in houselist:
+                                        house.render()
+                                        screen.blit(house.label, (house.x, house.y))
+                                
+                                    print "Totale waarde van wijk is: %.2f" % (Total_Value)
 
-                                #reset counter
-                                bewegingstries = 0
+                            #########################
+                            #try a random movement.
+                            ##########################
+                                else:
+                                    #loop for random placement
+                                    for house in houselist:
+                                        houselist.remove(house)
+                                        x = getRandInt()
+                                        y = getRandInt()
+                                        move(house, x, y)
 
-                            else:
-                                #counter to keep track of non-improving movements
-                                bewegingstries += 1
-                                if bewegingstries == bewegingstriesMax:
-                                    print "Break na %d mislukte tries, verschilwaarde (begin/eind): %.2f" % (bewegingstriesMax, (Total_Value-startValue))
-                                    Continue = True
-                                houselist = []
-                                for house in oldHouselist:
-                                    houselist.append(house)
+                                        if overlapCheck(house, houselist) == True:
+                                            moveback(house, x, y)
+                                        elif bounce(house) == True:
+                                            moveback(house, x, y)
 
-                        
+                                        houselist.append(house)
 
-                            pygame.display.update()
+                                        #get the value
+                                        houseposition(houselist)
+                                        NewValue = measureValue(houselist)
+
+                                        if Total_Value < NewValue:
+                                            Total_Value = NewValue
+                                            screen.fill(BLACK)
+                                        
+                                            for house in houselist:
+                                                house.render()
+                                                screen.blit(house.label, (house.x, house.y))
+                                        
+                                            print "Totale waarde van wijk is: %.2f" % (Total_Value)
+                                            #counter to keep track of non-improving movements
+
+                                            bewegingstries = 0
+
+                                    else:
+                                        bewegingstries += 1
+                                        if bewegingstries == bewegingstriesMax:
+                                            print "Break na %d mislukte tries, verschilwaarde (begin/eind): %.2f" % (bewegingstriesMax, (Total_Value-beginWaarde))
+                                            Continue = True
+                                        houselist = []
+                                        for house in oldHouselist:
+                                            houselist.append(house)
+                                
+
+                                pygame.display.update()
 
                         screenCapture()
